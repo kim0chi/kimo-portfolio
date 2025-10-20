@@ -454,7 +454,7 @@ export default function Portfolio() {
                             MySQL
                           </Badge>
                           <Badge variant="secondary" className="bg-primary/10 text-primary">
-                            Supabase
+                            PostgreSQL
                           </Badge>
                         </div>
                       </div>
@@ -466,6 +466,9 @@ export default function Portfolio() {
                           </Badge>
                           <Badge variant="secondary" className="bg-primary/10 text-primary">
                             Vercel
+                          </Badge>
+                          <Badge variant="secondary" className="bg-primary/10 text-primary">
+                            Azure
                           </Badge>
                         </div>
                       </div>
@@ -510,10 +513,10 @@ It aims to eliminate manual spreadsheet grading by providing an all-in-one platf
 
                 <ProjectCard
                   title="CampusFlow"
-                  description="Student Enrollment System using ASP.NET Core MVC with SQLite database. This is a multi-approval workflow system for managing student course enrollments with role-based access control."
+                  description="Student Enrollment System using ASP.NET Core MVC with PostgreSQL database. This is a multi-approval workflow system for managing student course enrollments with role-based access control."
                   image="/CampusFlow.png"
-                  technologies={["ASP.NET Core", "C#", "Razor Pages","SQLite", "JavaScript", "HTML/CSS"]}
-                  liveUrl="https://apps.apple.com/app/taskmanager"
+                  technologies={["ASP.NET Core", "C#", "Razor Pages","PostgreSQL", "JavaScript", "HTML/CSS","Azure"]}
+                  liveUrl="https://campusflow-b3hfdmbhbwhecgda.southeastasia-01.azurewebsites.net"
                   githubUrl="https://github.com/benedict/task-manager-ios"
                 />
 
