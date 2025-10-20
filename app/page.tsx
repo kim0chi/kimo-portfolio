@@ -508,6 +508,7 @@ It aims to eliminate manual spreadsheet grading by providing an all-in-one platf
                   image="/gradiant-logo.png"
                   technologies={["Next.js", "TypeScript", "Supabase", "Tailwind CSS"]}
                   liveUrl="https://ecommerce-demo.vercel.app"
+                  githubUrl="https://github.com/kim0chi/gradiant"
                   featured={true}
                 />
 
