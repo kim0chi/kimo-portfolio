@@ -517,7 +517,7 @@ It aims to eliminate manual spreadsheet grading by providing an all-in-one platf
                   image="/CampusFlow.png"
                   technologies={["ASP.NET Core", "C#", "Razor Pages","PostgreSQL", "JavaScript", "HTML/CSS","Azure"]}
                   liveUrl="https://campusflow-b3hfdmbhbwhecgda.southeastasia-01.azurewebsites.net"
-                  githubUrl="https://github.com/benedict/task-manager-ios"
+                  githubUrl="https://github.com/kim0chi/CampusFlow"
                 />
 
                 <ProjectCard
