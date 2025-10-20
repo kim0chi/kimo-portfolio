@@ -525,7 +525,7 @@ It aims to eliminate manual spreadsheet grading by providing an all-in-one platf
                   description="Hybrid Post-ASR Error Correction and Summarization Pipeline for English–Tagalog Classroom Lecture Transcripts"
                   image="/pulox-logo.png"
                   technologies={["Electron", "OpenAI ASR", "Python", "HTML/CSS","Neural Networks","Machine Learning"]}
-                  liveUrl="https://ai-chat-demo.vercel.app"
+                  liveUrl="https://pulox.netlify.app/"
                   githubUrl="https://github.com/kim0chi/Pulox"
                 />
               </div>
