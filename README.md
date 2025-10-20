@@ -3,7 +3,7 @@
 My personal developer portfolio built with **Next.js** and **Tailwind CSS**.  
 It showcases my **skills**, **projects**, and **experience** as a software developer.
 
-🌐 **Live Demo:** [Your Portfolio URL Here]
+🌐 **Live Demo:** [https://kimo-portfolio.netlify.app/]
 
 ---
 
@@ -26,3 +26,8 @@ It showcases my **skills**, **projects**, and **experience** as a software devel
 - **Frontend:** Next.js, React, TypeScript, Tailwind CSS  
 - **Design & UI:** Figma, Framer Motion  
 - **Hosting:** Vercel
+
+## 🧾 License
+
+© 2025 Benedict Gio B. Illustrisimo.
+Built with ❤️ using Next.js and Tailwind CSS.
