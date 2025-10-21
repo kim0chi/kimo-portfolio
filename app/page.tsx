@@ -507,7 +507,7 @@ export default function Portfolio() {
 It aims to eliminate manual spreadsheet grading by providing an all-in-one platform that’s accessible on both desktop and mobile."
                   image="/gradiant-logo.png"
                   technologies={["Next.js", "TypeScript", "Supabase", "Tailwind CSS"]}
-                  liveUrl="https://ecommerce-demo.vercel.app"
+                  liveUrl="https://v0-maintenance-page-design-beta.vercel.app/"
                   githubUrl="https://github.com/kim0chi/gradiant"
                   featured={true}
                 />
