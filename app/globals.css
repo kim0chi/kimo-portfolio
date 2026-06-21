@@ -1,84 +1,78 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
+/*
+  R.E.P.O.-inspired desaturated CRT phosphor theme.
+  Grimy off-white/grey-green foreground on near-black, with one sickly
+  phosphor-green accent doing most of the work, plus amber + alarm-red.
+  Dark-only by design — all tokens live on :root.
+*/
 :root {
-  /* Updated to Apple-inspired design tokens */
-  --background: oklch(1 0 0); /* Pure white */
-  --foreground: oklch(0.2 0 0); /* Near black for text */
-  --card: oklch(0.98 0 0); /* Very light gray for cards */
-  --card-foreground: oklch(0.2 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0 0);
-  --primary: oklch(0.55 0.15 250); /* Apple blue #007aff */
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.97 0 0); /* Light gray */
-  --secondary-foreground: oklch(0.2 0 0);
-  --muted: oklch(0.95 0 0); /* Muted background */
-  --muted-foreground: oklch(0.45 0 0); /* Medium gray text */
-  --accent: oklch(0.55 0.15 250); /* Apple blue accent */
-  --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.55 0.2 15); /* Red for destructive actions */
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.9 0 0); /* Light border */
-  --input: oklch(1 0 0);
-  --ring: oklch(0.55 0.15 250 / 0.3); /* Apple blue focus ring */
-  --chart-1: oklch(0.55 0.15 250);
-  --chart-2: oklch(0.6 0.12 280);
-  --chart-3: oklch(0.5 0.18 220);
-  --chart-4: oklch(0.6 0.2 140);
-  --chart-5: oklch(0.65 0.25 30);
-  --radius: 0.75rem; /* Slightly larger radius for Apple feel */
-  --sidebar: oklch(0.98 0 0); /* Light sidebar */
-  --sidebar-foreground: oklch(0.2 0 0);
-  --sidebar-primary: oklch(0.55 0.15 250);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.2 0 0);
-  --sidebar-border: oklch(0.9 0 0);
-  --sidebar-ring: oklch(0.55 0.15 250 / 0.3);
+  --background: oklch(0.16 0.008 130); /* near-black, faint green tint */
+  --foreground: oklch(0.86 0.025 120); /* grimy off-white grey-green */
+  --card: oklch(0.19 0.01 135);
+  --card-foreground: oklch(0.86 0.025 120);
+  --popover: oklch(0.17 0.01 135);
+  --popover-foreground: oklch(0.86 0.025 120);
+
+  --primary: oklch(0.8 0.14 122); /* phosphor green */
+  --primary-foreground: oklch(0.15 0.01 130);
+  --secondary: oklch(0.24 0.012 135);
+  --secondary-foreground: oklch(0.86 0.025 120);
+  --muted: oklch(0.22 0.01 135);
+  --muted-foreground: oklch(0.62 0.02 122); /* dim phosphor */
+  --accent: oklch(0.8 0.14 122);
+  --accent-foreground: oklch(0.15 0.01 130);
+
+  --warning: oklch(0.78 0.14 75); /* amber */
+  --alarm: oklch(0.62 0.2 28); /* alarm red */
+  --destructive: oklch(0.62 0.2 28);
+  --destructive-foreground: oklch(0.95 0.02 120);
+
+  --border: oklch(0.34 0.02 128 / 0.55);
+  --input: oklch(0.22 0.01 135);
+  --ring: oklch(0.8 0.14 122 / 0.5);
+
+  --chart-1: oklch(0.8 0.14 122);
+  --chart-2: oklch(0.78 0.14 75);
+  --chart-3: oklch(0.62 0.2 28);
+  --chart-4: oklch(0.7 0.1 160);
+  --chart-5: oklch(0.62 0.02 122);
+
+  --radius: 0.125rem; /* hard, boxy corners */
+
+  --sidebar: oklch(0.17 0.01 135);
+  --sidebar-foreground: oklch(0.86 0.025 120);
+  --sidebar-primary: oklch(0.8 0.14 122);
+  --sidebar-primary-foreground: oklch(0.15 0.01 130);
+  --sidebar-accent: oklch(0.24 0.012 135);
+  --sidebar-accent-foreground: oklch(0.86 0.025 120);
+  --sidebar-border: oklch(0.34 0.02 128 / 0.55);
+  --sidebar-ring: oklch(0.8 0.14 122 / 0.5);
+
+  /* phosphor glow strength, dialed down when CRT effects are off */
+  --glow: 0.55;
+  /* phosphor hue — Konami easter egg flips this to amber (see .amber) */
+  --phos-h: 122;
 }
 
-.dark {
-  /* Updated dark mode tokens for Apple-inspired dark theme */
-  --background: oklch(0.08 0 0); /* Very dark background */
-  --foreground: oklch(0.95 0 0); /* Near white text */
-  --card: oklch(0.12 0 0); /* Dark card background */
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.08 0 0);
-  --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.6 0.15 250); /* Brighter blue for dark mode */
-  --primary-foreground: oklch(0.08 0 0);
-  --secondary: oklch(0.15 0 0); /* Dark gray */
-  --secondary-foreground: oklch(0.95 0 0);
-  --muted: oklch(0.15 0 0);
-  --muted-foreground: oklch(0.6 0 0); /* Medium gray for dark mode */
-  --accent: oklch(0.6 0.15 250);
-  --accent-foreground: oklch(0.08 0 0);
-  --destructive: oklch(0.6 0.2 15);
-  --destructive-foreground: oklch(0.95 0 0);
-  --border: oklch(0.2 0 0); /* Dark border */
-  --input: oklch(0.12 0 0);
-  --ring: oklch(0.6 0.15 250 / 0.4);
-  --chart-1: oklch(0.6 0.15 250);
-  --chart-2: oklch(0.65 0.12 280);
-  --chart-3: oklch(0.55 0.18 220);
-  --chart-4: oklch(0.65 0.2 140);
-  --chart-5: oklch(0.7 0.25 30);
-  --sidebar: oklch(0.1 0 0); /* Dark sidebar */
-  --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.6 0.15 250);
-  --sidebar-primary-foreground: oklch(0.08 0 0);
-  --sidebar-accent: oklch(0.15 0 0);
-  --sidebar-accent-foreground: oklch(0.95 0 0);
-  --sidebar-border: oklch(0.2 0 0);
-  --sidebar-ring: oklch(0.6 0.15 250 / 0.4);
+/* secret amber-phosphor mode (Konami code) */
+.amber {
+  --foreground: oklch(0.87 0.07 75);
+  --primary: oklch(0.82 0.15 75);
+  --primary-foreground: oklch(0.16 0.02 75);
+  --accent: oklch(0.82 0.15 75);
+  --muted-foreground: oklch(0.64 0.07 75);
+  --border: oklch(0.42 0.06 75 / 0.55);
+  --ring: oklch(0.82 0.15 75 / 0.5);
+  --sidebar-primary: oklch(0.82 0.15 75);
+  --phos-h: 75;
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-geist-mono);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display-face, var(--font-geist-mono));
+  --font-terminal: var(--font-terminal-face, var(--font-geist-mono));
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -93,6 +87,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-warning: var(--warning);
+  --color-alarm: var(--alarm);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -103,10 +99,10 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: var(--radius);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -123,5 +119,499 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    text-transform: none;
+    letter-spacing: 0.01em;
+  }
+  ::selection {
+    background: oklch(0.8 0.14 122 / 0.3);
+    color: var(--foreground);
+  }
+  /* phosphor scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.34 0.04 128 / 0.7);
+    border: 2px solid var(--background);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+  }
+}
+
+/* ---------- Display type ---------- */
+.font-display {
+  font-family: var(--font-display-face, var(--font-geist-mono)), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+.font-terminal {
+  font-family: var(--font-terminal-face, var(--font-geist-mono)), monospace;
+}
+
+/* ---------- Phosphor glow helpers ---------- */
+.text-glow {
+  text-shadow: 0 0 calc(8px * var(--glow)) oklch(0.8 0.14 var(--phos-h) / calc(0.7 * var(--glow)));
+}
+.text-glow-strong {
+  text-shadow:
+    0 0 calc(4px * var(--glow)) oklch(0.85 0.14 var(--phos-h) / 0.9),
+    0 0 calc(16px * var(--glow)) oklch(0.8 0.14 var(--phos-h) / 0.6);
+}
+.box-glow {
+  box-shadow:
+    0 0 calc(10px * var(--glow)) oklch(0.8 0.14 var(--phos-h) / calc(0.25 * var(--glow))),
+    inset 0 0 calc(20px * var(--glow)) oklch(0.8 0.14 var(--phos-h) / calc(0.05 * var(--glow)));
+}
+
+/* blinking terminal cursor */
+.cursor-blink::after {
+  content: "_";
+  margin-left: 0.1ch;
+  animation: blink 1.06s steps(1) infinite;
+  color: var(--primary);
+}
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- CRT screen effects (toggled via .crt-on on <html>) ---------- */
+.crt-fx {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.crt-on .crt-fx {
+  opacity: 1;
+}
+
+/* scanlines */
+.crt-scanlines {
+  background: repeating-linear-gradient(
+    to bottom,
+    oklch(0 0 0 / 0) 0px,
+    oklch(0 0 0 / 0) 2px,
+    oklch(0 0 0 / 0.22) 3px,
+    oklch(0 0 0 / 0.22) 4px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* moving horizontal refresh band */
+.crt-flicker {
+  background: linear-gradient(
+    to bottom,
+    oklch(0.8 0.14 122 / 0) 0%,
+    oklch(0.8 0.14 122 / 0.04) 50%,
+    oklch(0.8 0.14 122 / 0) 100%
+  );
+  background-size: 100% 240px;
+  animation: scan-roll 7s linear infinite;
+}
+@keyframes scan-roll {
+  0% {
+    background-position: 0 -240px;
+  }
+  100% {
+    background-position: 0 100vh;
+  }
+}
+
+/* vignette + screen curvature shading */
+.crt-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    oklch(0 0 0 / 0.35) 100%
+  );
+  box-shadow: inset 0 0 140px oklch(0 0 0 / 0.6);
+}
+
+/* subtle global flicker on the whole document */
+.crt-on body {
+  animation: crt-bright 4.2s ease-in-out infinite;
+}
+@keyframes crt-bright {
+  0%,
+  100% {
+    filter: brightness(1) saturate(1);
+  }
+  48% {
+    filter: brightness(1.02) saturate(1.04);
+  }
+  50% {
+    filter: brightness(0.97) saturate(0.98);
+  }
+}
+
+/* power-on animation when the interface first appears */
+.crt-poweron {
+  animation: power-on 0.9s ease-out both;
+}
+@keyframes power-on {
+  0% {
+    transform: scaleY(0.002) scaleX(1);
+    filter: brightness(6);
+    opacity: 0.9;
+  }
+  35% {
+    transform: scaleY(0.01) scaleX(1);
+    filter: brightness(4);
+  }
+  60% {
+    transform: scaleY(1) scaleX(1.04);
+    filter: brightness(2);
+  }
+  100% {
+    transform: scaleY(1) scaleX(1);
+    filter: brightness(1);
+    opacity: 1;
+  }
+}
+
+/* boot overlay power-off collapse into a line then darkness */
+.boot-exit {
+  animation: boot-off 0.65s cubic-bezier(0.5, 0, 0.75, 0) both;
+  transform-origin: center;
+}
+@keyframes boot-off {
+  0% {
+    transform: scaleY(1);
+    filter: brightness(1);
+    opacity: 1;
+  }
+  55% {
+    transform: scaleY(0.01);
+    filter: brightness(3);
+    opacity: 1;
+  }
+  80% {
+    transform: scaleY(0.01) scaleX(0.5);
+    filter: brightness(5);
+  }
+  100% {
+    transform: scaleY(0.002) scaleX(0);
+    filter: brightness(8);
+    opacity: 0;
+  }
+}
+
+/* ambient full-bleed ASCII background */
+.ascii-bg {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: fit-content;
+  height: fit-content;
+  font-size: clamp(0.5rem, 2.1vw, 1.15rem);
+  opacity: 0.09;
+  animation: bg-drift 34s ease-in-out infinite alternate;
+}
+@keyframes bg-drift {
+  from {
+    transform: translateY(-2.5%) scale(1.02);
+  }
+  to {
+    transform: translateY(2.5%) scale(1.06);
+  }
+}
+/* phosphor spotlight following the cursor (--mx/--my set by CursorFx) */
+.ascii-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    circle 220px at var(--mx, 50%) var(--my, 50%),
+    oklch(0.9 0.14 var(--phos-h) / 0.12),
+    transparent 72%
+  );
+}
+
+/* custom-cursor mode hides the native pointer */
+.hide-cursor,
+.hide-cursor * {
+  cursor: none !important;
+}
+
+/* ---------- ASCII portrait: pupils, scan beam, glitch ---------- */
+.pupil {
+  width: 0.62em;
+  height: 0.62em;
+  background: oklch(0.92 0.16 var(--phos-h));
+  box-shadow:
+    0 0 calc(6px * var(--glow)) oklch(0.85 0.16 var(--phos-h) / 0.9),
+    0 0 calc(12px * var(--glow)) oklch(0.8 0.14 var(--phos-h) / 0.6);
+  transform: translate(calc(-50% + var(--px, 0px)), calc(-50% + var(--py, 0px)));
+  transition: transform 90ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.scan-beam {
+  overflow: hidden;
+}
+.scan-beam::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 16%;
+  background: linear-gradient(
+    to bottom,
+    oklch(0.9 0.16 var(--phos-h) / 0) 0%,
+    oklch(0.9 0.16 var(--phos-h) / 0.18) 50%,
+    oklch(0.9 0.16 var(--phos-h) / 0) 100%
+  );
+  mix-blend-mode: screen;
+  animation: beam-sweep 3.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes beam-sweep {
+  0% {
+    top: -16%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.rgb-glitch {
+  text-shadow:
+    0.07em 0 oklch(0.62 0.24 25 / 0.85),
+    -0.07em 0 oklch(0.72 0.16 230 / 0.85),
+    0 0 calc(8px * var(--glow)) oklch(0.8 0.14 var(--phos-h) / 0.6);
+  animation: glitch-jitter 0.22s steps(2) 1;
+}
+@keyframes glitch-jitter {
+  0% {
+    transform: translateX(0) skewX(0deg);
+  }
+  25% {
+    transform: translateX(-2px) skewX(-1.2deg);
+  }
+  50% {
+    transform: translateX(2px) skewX(1deg);
+  }
+  75% {
+    transform: translateX(-1px) skewX(0.5deg);
+  }
+  100% {
+    transform: translateX(0) skewX(0deg);
+  }
+}
+
+/* phosphor-keyed real photo; hue follows --phos-h so amber mode retints it */
+.crt-photo {
+  filter: grayscale(1) sepia(1) hue-rotate(calc((var(--phos-h) - 75) * 1deg)) saturate(2.3)
+    brightness(1.02) contrast(1.06);
+}
+.img-glitch {
+  animation: img-glitch 0.22s steps(2) 1;
+}
+@keyframes img-glitch {
+  0% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(0);
+  }
+  20% {
+    clip-path: inset(18% 0 42% 0);
+    transform: translateX(-6px);
+  }
+  40% {
+    clip-path: inset(58% 0 12% 0);
+    transform: translateX(7px);
+  }
+  60% {
+    clip-path: inset(34% 0 38% 0);
+    transform: translateX(-4px);
+  }
+  80% {
+    clip-path: inset(70% 0 4% 0);
+    transform: translateX(3px);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(0);
+  }
+}
+
+/* scanline + tint overlay for the CRT portrait feed */
+.crt-portrait-scan {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      oklch(0 0 0 / 0) 0px,
+      oklch(0 0 0 / 0) 2px,
+      oklch(0 0 0 / 0.35) 3px,
+      oklch(0 0 0 / 0.35) 4px
+    ),
+    radial-gradient(ellipse at center, transparent 60%, oklch(0 0 0 / 0.4) 100%);
+}
+
+/* project module load bar */
+.load-bar {
+  width: 0%;
+  animation: load-fill 0.5s steps(12) forwards;
+}
+@keyframes load-fill {
+  to {
+    width: 100%;
+  }
+}
+
+/* ---------- channel-change transition (segment scroll) ---------- */
+.channel-flash {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  opacity: 0;
+  background: var(--background);
+  overflow: hidden;
+}
+.channel-flash.on {
+  animation: ch-flash 0.5s ease-out 1;
+}
+@keyframes ch-flash {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  62% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* static texture */
+.channel-flash.on::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, oklch(0.86 0.02 120 / 0.1) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, oklch(0 0 0 / 0.45) 0 2px, transparent 2px 4px);
+  background-size: 100% 4px, 3px 100%;
+  animation: ch-static 0.5s steps(5) 1;
+}
+@keyframes ch-static {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  20% {
+    background-position: -8px 6px, 5px 0;
+  }
+  40% {
+    background-position: 6px -4px, -4px 0;
+  }
+  60% {
+    background-position: -5px 8px, 3px 0;
+  }
+  80% {
+    background-position: 7px -6px, -6px 0;
+  }
+  100% {
+    background-position: 0 0, 0 0;
+  }
+}
+/* bright horizontal roll bar */
+.channel-flash.on::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    oklch(0.9 0.14 var(--phos-h) / 0.3),
+    transparent
+  );
+  mix-blend-mode: screen;
+  animation: ch-roll 0.5s linear 1;
+}
+@keyframes ch-roll {
+  0% {
+    top: -28%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+/* ---------- Snappy interaction primitives ---------- */
+.snap {
+  transition:
+    transform 90ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 90ms linear,
+    color 90ms linear,
+    border-color 90ms linear,
+    box-shadow 120ms ease;
+}
+.snap:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+/* selectable list-item invert on hover/focus */
+.menu-item {
+  transition:
+    background-color 70ms linear,
+    color 70ms linear,
+    padding-left 90ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.menu-item:hover,
+.menu-item[data-active="true"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* ---------- Reduced motion: kill flicker/roll/power-on ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .crt-flicker,
+  .crt-on body,
+  .crt-poweron,
+  .boot-exit,
+  .scan-beam::after,
+  .rgb-glitch,
+  .img-glitch,
+  .ascii-bg,
+  .channel-flash,
+  .channel-flash.on::before,
+  .channel-flash.on::after,
+  .cursor-blink::after {
+    animation: none !important;
+  }
+  .snap,
+  .menu-item {
+    transition-duration: 1ms;
+  }
+  .segment-scroller {
+    scroll-behavior: auto !important;
+    scroll-snap-type: none;
   }
 }

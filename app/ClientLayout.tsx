@@ -1,10 +1,13 @@
 "use client"
 
 import type React from "react"
-import { Suspense } from "react"
-import { ThemeProvider } from "next-themes"
 import { Analytics } from "@vercel/analytics/react"
+import { SoundProvider } from "@/lib/sound"
+import { CrtProvider } from "@/lib/crt"
 
+// The theme is a single dark-only phosphor palette defined on :root, so no
+// theme provider is needed — the CRT and amber toggles are handled by CrtProvider
+// and the Konami component.
 export default function ClientLayout({
   children,
 }: Readonly<{
@@ -12,11 +15,9 @@ export default function ClientLayout({
 }>) {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange={false}>
-          {children}
-        </ThemeProvider>
-      </Suspense>
+      <CrtProvider>
+        <SoundProvider>{children}</SoundProvider>
+      </CrtProvider>
       <Analytics />
     </>
   )
