@@ -92,6 +92,11 @@ export function HeroTerminal() {
         print([{ kind: "ok", text: "loading skills readout..." }])
         scrollTo("skills")
         break
+      case "achievements":
+      case "awards":
+        print([{ kind: "ok", text: "loading achievements.log..." }])
+        scrollTo("achievements")
+        break
       case "experience":
       case "work":
         print([{ kind: "ok", text: "loading experience.log..." }])

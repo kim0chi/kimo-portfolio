@@ -66,6 +66,11 @@ export function ProjectModule({ project, index }: { project: Project; index: num
                 <Trophy className="h-3 w-3" /> WINNER
               </span>
             )}
+            {project.status === "production" && (
+              <span className="inline-flex items-center gap-1 border border-primary text-primary text-glow text-[10px] px-1.5 py-0.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" /> IN PRODUCTION
+              </span>
+            )}
           </span>
           <span className="block text-xs text-muted-foreground mt-0.5">{project.tagline}</span>
         </span>

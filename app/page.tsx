@@ -1,6 +1,6 @@
 "use client"
 
-import { Award, GraduationCap, MapPin, ScrollText } from "lucide-react"
+import { Award, GraduationCap, MapPin, ScrollText, Trophy } from "lucide-react"
 import { AsciiBackground } from "@/components/crt/ascii-background"
 import { AmbientCanvas } from "@/components/crt/ambient-canvas"
 import { CursorFx } from "@/components/crt/cursor-fx"
@@ -17,6 +17,8 @@ import { AsciiMeter } from "@/components/crt/ascii-meter"
 import { ProjectModule } from "@/components/crt/project-module"
 import type { SegMeta } from "@/lib/segments"
 import {
+  achievements,
+  type Achievement,
   certifications,
   education,
   experience,
@@ -33,6 +35,7 @@ const SEGMENTS: SegMeta[] = [
   { id: "education", label: "EDUCATION" },
   { id: "skills", label: "SKILLS" },
   { id: "projects", label: "PROJECTS" },
+  { id: "achievements", label: "ACHIEVEMENTS" },
 ]
 
 // Full-viewport segment wrapper. Content is centered; if it ever exceeds one
@@ -78,6 +81,54 @@ function JobCard({ job }: { job: Experience }) {
             {t}
           </span>
         ))}
+      </div>
+    </article>
+  )
+}
+
+function AchievementCard({ a }: { a: Achievement }) {
+  return (
+    <article className="h-full overflow-hidden border border-primary/50 box-glow bg-background/40">
+      {a.image && (
+        <div className="relative flex w-full items-center justify-center overflow-hidden border-b border-border bg-background p-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={a.image}
+            alt=""
+            aria-hidden
+            className="crt-photo max-h-56 w-auto object-contain"
+            draggable={false}
+          />
+          <div className="crt-portrait-scan pointer-events-none absolute inset-0" aria-hidden />
+        </div>
+      )}
+      <div className="p-4 sm:p-5">
+        <h3 className="font-display text-base text-foreground text-glow sm:text-lg">{a.title}</h3>
+        <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-warning">
+          <Trophy className="h-4 w-4 shrink-0" /> {a.result}
+        </p>
+        <p className="mt-1 text-xs text-primary text-glow">
+          {[a.event, a.team && `Team ${a.team}`, a.date].filter(Boolean).join(" · ")}
+        </p>
+        {a.org && <p className="text-xs text-muted-foreground">{a.org}</p>}
+        {a.role && (
+          <p className="mt-1 text-xs text-muted-foreground">
+            Role: <span className="text-foreground">{a.role}</span>
+          </p>
+        )}
+        <p className="mt-3 text-sm text-muted-foreground">{a.description}</p>
+        {a.members && (
+          <div className="mt-3">
+            <h4 className="mb-1.5 text-xs uppercase tracking-wider text-muted-foreground">Team</h4>
+            <div className="flex flex-wrap gap-1.5">
+              {a.members.map((m) => (
+                <span key={m} className="border border-border px-1.5 py-0.5 text-[11px] text-muted-foreground">
+                  {m}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </article>
   )
@@ -224,6 +275,20 @@ export default function Portfolio() {
             {projects.map((p, i) => (
               <Reveal key={p.id} delay={i * 30}>
                 <ProjectModule project={p} index={i} />
+              </Reveal>
+            ))}
+          </div>
+        </Segment>
+
+        {/* 05 ACHIEVEMENTS */}
+        <Segment id="achievements">
+          <Reveal>
+            <SectionHeading command="cat achievements.log" title="Achievements" />
+          </Reveal>
+          <div className="grid items-start gap-4 md:grid-cols-2">
+            {achievements.map((a, i) => (
+              <Reveal key={a.id} delay={i * 50}>
+                <AchievementCard a={a} />
               </Reveal>
             ))}
           </div>

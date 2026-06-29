@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { Briefcase, FolderGit2, GraduationCap, Cpu, Terminal, X } from "lucide-react"
+import { Briefcase, FolderGit2, GraduationCap, Cpu, Terminal, Trophy, X } from "lucide-react"
 import { useSound } from "@/lib/sound"
 import { segmentNav } from "@/lib/segments"
 
@@ -13,6 +13,7 @@ const ITEMS: Item[] = [
   { id: "education", label: "EDUCATION", Icon: GraduationCap },
   { id: "skills", label: "SKILLS", Icon: Cpu },
   { id: "projects", label: "PROJECTS", Icon: FolderGit2 },
+  { id: "achievements", label: "ACHIEVEMENTS", Icon: Trophy },
 ]
 
 function scrollToId(id: string) {

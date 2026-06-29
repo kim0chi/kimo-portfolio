@@ -33,9 +33,6 @@ export function TerminalHero() {
           <div className="p-4 sm:p-6 flex flex-col md:flex-row gap-5 md:gap-7 items-center md:items-start">
             {/* real phosphor-keyed photo feed */}
             <div className="shrink-0 relative border border-primary/50 box-glow p-1.5 bg-background/60 w-40 sm:w-44 md:w-52">
-              <span className="absolute -top-px right-1 z-10 flex items-center gap-1 text-[9px] text-alarm bg-background px-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-alarm animate-pulse" /> REC
-              </span>
               <PhotoPortrait />
             </div>
 

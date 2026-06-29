@@ -36,7 +36,6 @@ export const experience: Experience[] = [
     org: "Symph Inc.",
     location: "Cebu City",
     period: "NOV 2025 — APR 2026",
-    current: true,
     bullets: [
       "Built and maintained LessonPlannerPH, a production web app for AI-assisted lesson planning, using Next.js, TypeScript, and modern UI libraries.",
       "Shipped UI improvements, v2 product features, admin tooling, performance optimizations, and backend logic changes from design and engineering specs.",
@@ -150,6 +149,8 @@ export type Project = {
   githubUrl?: string
   featured?: boolean
   award?: string
+  /** Lifecycle status badge, e.g. "production" for actively-productionized work. */
+  status?: string
 }
 
 export const projects: Project[] = [
@@ -160,8 +161,9 @@ export const projects: Project[] = [
     description:
       "Led development of an AI-powered system that extracts shipment details from 100–500 page contracts and manifests. Architected a FastAPI extraction pipeline with built-in validation and self-verification for accurate structured output, plus a cost-optimized LLM profiling algorithm balancing performance against inference cost.",
     tech: ["Next.js", "FastAPI", "LLMs", "React", "Tailwind", "shadcn/ui"],
-    award: "Won a hackathon against teams from top universities in Cebu",
+    award: "Grand Prize — OLTEK Solutions: Data Logistics Automation Challenge",
     featured: true,
+    status: "production",
     githubUrl: "https://github.com/kim0chi",
   },
   {
@@ -172,6 +174,7 @@ export const projects: Project[] = [
       "An AI agent that automates document triage, preprocessing, layout analysis, component identification, classification, and structured content extraction — built on LangGraph, RAG, and vector embeddings with contextual understanding and document versioning.",
     tech: ["LangGraph", "RAG", "Vector Embeddings", "LLMs", "Python"],
     featured: true,
+    status: "production",
     githubUrl: "https://github.com/kim0chi",
   },
   {
@@ -215,5 +218,53 @@ export const projects: Project[] = [
       "A sentiment-analysis model for the Cebuano (Bisaya) language: scraped and gathered 20,000+ local news articles, preprocessed the text, and trained a classifier to detect positive and negative sentiment.",
     tech: ["Python", "NLP", "Machine Learning", "Web Scraping"],
     githubUrl: "https://github.com/kim0chi",
+  },
+]
+
+export type Achievement = {
+  id: string
+  title: string
+  event?: string
+  result: string
+  role?: string
+  team?: string
+  org?: string
+  date?: string
+  members?: string[]
+  description: string
+  image?: string
+}
+
+export const achievements: Achievement[] = [
+  {
+    id: "oltek",
+    title: "OLTEK Solutions — Data: Logistics Automation Challenge",
+    event: "Pro Paper Tech Competition",
+    result: "Grand Prize Champion · ₱50,000",
+    role: "Lead Developer",
+    team: "AGENTX44",
+    date: "March 2026",
+    description:
+      "As lead developer of team AGENTX44, I designed and built our solution end-to-end — a pipeline that turns dense logistics documents into clean, structured, business-ready data (productized as Manifesto). Beyond the technical win, it sharpened my leadership, collaboration, and problem-solving under pressure. A memorable milestone that keeps me building solutions that matter — and one I couldn't have reached without the whole team's ideas, time, and effort.",
+    image: "/Oltek-web.webp",
+  },
+  {
+    id: "lambo-2026",
+    title: "LAMBO 2026 — AI-Powered Business Case Competition",
+    event: "Cebu's AI Business Summit",
+    result: "Top 10 · Semifinalist (Wildcard) — of 30 teams",
+    role: "Data Analyst & Lead Developer",
+    team: "SiXeven",
+    org: "Representing University of Cebu — Lapu-Lapu & Mandaue Campus",
+    date: "2026",
+    members: [
+      "Benedict Gio B. Illustrisimo",
+      "Nathanael L. Larida",
+      "Matt Alexius Y. Merano",
+      "Raj Efpi O. Tag-at",
+    ],
+    description:
+      "Representing UC Lapu-Lapu & Mandaue as team SiXeven, we advanced to the Semifinals (Top 10, Wildcard) out of 30 teams drawn from Cebu's top schools and competitors. Round after round we designed and pitched AI-powered business solutions case by case — each grounded in the realities of Filipino businesses: local market dynamics, operating constraints, data availability, and SME-friendly budgets, so every recommendation was practical and adoptable, not just technically impressive.",
+    image: "/Lambo-web.webp",
   },
 ]
