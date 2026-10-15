@@ -1,309 +1,385 @@
 "use client"
 
-import { Award, GraduationCap, MapPin, ScrollText, Trophy } from "lucide-react"
-import { AsciiBackground } from "@/components/crt/ascii-background"
-import { AmbientCanvas } from "@/components/crt/ambient-canvas"
-import { CursorFx } from "@/components/crt/cursor-fx"
-import { BootSequence } from "@/components/crt/boot-sequence"
-import { SystemBar } from "@/components/crt/system-bar"
-import { CrtOverlay } from "@/components/crt/crt-overlay"
-import { CommandMenu } from "@/components/crt/command-menu"
-import { Konami } from "@/components/crt/konami"
-import { SegmentScroller } from "@/components/crt/segment-scroller"
-import { TerminalHero } from "@/components/crt/terminal-hero"
-import { SectionHeading } from "@/components/crt/section-heading"
-import { Reveal } from "@/components/crt/reveal"
-import { AsciiMeter } from "@/components/crt/ascii-meter"
-import { ProjectModule } from "@/components/crt/project-module"
-import type { SegMeta } from "@/lib/segments"
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react"
+import {
+  ArrowDownRight,
+  ArrowRight,
+  ArrowUpRight,
+  Github,
+  Linkedin,
+  Mail,
+  MapPin,
+  Menu,
+  X,
+} from "lucide-react"
 import {
   achievements,
-  type Achievement,
   certifications,
   education,
   experience,
-  type Experience,
   profile,
   projects,
   skillGroups,
   skillTags,
+  type Achievement,
+  type Experience,
+  type Project,
 } from "@/lib/content"
 
-const SEGMENTS: SegMeta[] = [
-  { id: "profile", label: "PROFILE" },
-  { id: "experience", label: "EXPERIENCE" },
-  { id: "education", label: "EDUCATION" },
-  { id: "skills", label: "SKILLS" },
-  { id: "projects", label: "PROJECTS" },
-  { id: "achievements", label: "ACHIEVEMENTS" },
+const artwork = {
+  image: "https://upload.wikimedia.org/wikipedia/commons/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg",
+  source: "https://commons.wikimedia.org/wiki/File:Claude_Monet_-_Water_Lilies_-_1906,_Ryerson.jpg",
+}
+
+const navigation = [
+  { href: "#work", label: "Work" },
+  { href: "#about", label: "About" },
+  { href: "#experience", label: "Experience" },
+  { href: "#contact", label: "Contact" },
 ]
 
-// Full-viewport segment wrapper. Content is centered; if it ever exceeds one
-// screen the scroller switches that segment to internal scrolling.
-function Segment({ id, children }: { id: string; children: React.ReactNode }) {
+function Reveal({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: ReactNode
+  className?: string
+  delay?: number
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const element = ref.current
+    if (!element || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+    if (!("IntersectionObserver" in window)) return
+
+    element.classList.add("reveal-pending")
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          element.classList.add("reveal-visible")
+          observer.unobserve(element)
+        }
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
+    )
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section
-      id={id}
-      data-segment={id}
-      className="flex min-h-[100svh] w-full flex-col justify-center px-4 py-14"
+    <div
+      ref={ref}
+      className={"soft-reveal " + className}
+      style={{ "--reveal-delay": delay + "ms" } as CSSProperties}
     >
-      <div className="mx-auto w-full max-w-5xl">{children}</div>
-    </section>
+      {children}
+    </div>
   )
 }
 
-function JobCard({ job }: { job: Experience }) {
+function SectionTitle({
+  index,
+  eyebrow,
+  title,
+  accent,
+  intro,
+  id,
+}: {
+  index: string
+  eyebrow: string
+  title: string
+  accent?: string
+  intro?: string
+  id?: string
+}) {
   return (
-    <article className="snap h-full border border-border bg-background/40 p-4 hover:border-primary/60 sm:p-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h3 className="font-display text-base text-foreground text-glow sm:text-lg">{job.role}</h3>
-        <span className="text-[11px] tabular-nums text-muted-foreground">{job.period}</span>
+    <div className="section-heading">
+      <div className="section-heading-copy">
+        <span className="eyebrow"><span className="section-index">{index}</span> / {eyebrow}</span>
+        <h2 className="section-title" id={id}>
+          {title}{accent && <> <em>{accent}</em></>}
+        </h2>
       </div>
-      <p className="text-sm text-primary text-glow">
-        {job.org} <span className="text-muted-foreground">// {job.location}</span>
-        {job.current && (
-          <span className="ml-2 inline-flex items-center gap-1 border border-warning px-1.5 py-0.5 text-[10px] text-warning">
-            <span className="h-1.5 w-1.5 rounded-full bg-warning animate-pulse" /> ACTIVE
-          </span>
-        )}
-      </p>
-      <ul className="mt-3 space-y-1.5">
-        {job.bullets.map((b, bi) => (
-          <li key={bi} className="flex gap-2 text-sm text-muted-foreground">
-            <span className="shrink-0 text-primary">&gt;</span>
-            <span>{b}</span>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {job.tech.map((t) => (
-          <span key={t} className="border border-border px-1.5 py-0.5 text-[11px] text-muted-foreground">
-            {t}
-          </span>
-        ))}
+      {intro && <p className="section-intro">{intro}</p>}
+    </div>
+  )
+}
+
+function ProjectArt({ project, index }: { project: Project; index: number }) {
+  return (
+    <div className={"project-art project-art--" + project.id}>
+      <div className="project-art-orb" aria-hidden="true" />
+      <span className="project-art-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+      {project.image ? (
+        // Existing portfolio project assets are served from /public.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img className="project-art-image" src={project.image} alt="" loading="lazy" />
+      ) : (
+        <span className="project-art-word" aria-hidden="true">{project.title}</span>
+      )}
+      <span className="project-art-caption">Selected work · {String(index + 1).padStart(2, "0")}</span>
+    </div>
+  )
+}
+
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const destination = project.liveUrl || project.githubUrl
+
+  return (
+    <article className={"project-card " + (index === 0 ? "project-card-featured" : "")}>
+      <ProjectArt project={project} index={index} />
+      <div className="project-details">
+        <div className="project-topline">
+          <span className="eyebrow">{project.featured ? "Featured project" : "Selected project"}</span>
+          {project.status && <span className="project-status">{project.status}</span>}
+        </div>
+        <div className="project-name-row">
+          <h3 className="project-title">{project.title}</h3>
+          {destination && (
+            <a
+              className="project-action"
+              href={destination}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={"View " + project.title + " project"}
+            >
+              <ArrowUpRight size={22} strokeWidth={1.6} aria-hidden="true" />
+            </a>
+          )}
+        </div>
+        <p className="project-tagline">{project.tagline}</p>
+        <p className="project-description">{project.description}</p>
+        {project.award && <p className="project-award">✳ {project.award}</p>}
+        <div className="project-tags">
+          {project.tech.slice(0, 6).map((tech) => <span key={tech}>{tech}</span>)}
+        </div>
       </div>
     </article>
   )
 }
 
-function AchievementCard({ a }: { a: Achievement }) {
+function CareerEntry({ job, index }: { job: Experience; index: number }) {
   return (
-    <article className="h-full overflow-hidden border border-primary/50 box-glow bg-background/40">
-      {a.image && (
-        <div className="relative flex w-full items-center justify-center overflow-hidden border-b border-border bg-background p-2">
+    <article className="career-entry">
+      <div className="career-when">
+        <span className="career-index">{String(index + 1).padStart(2, "0")}</span>
+        <span>{job.period}</span>
+      </div>
+      <div className="career-body">
+        <h3>{job.role}</h3>
+        <p className="career-org">{job.org} <span>· {job.location}</span></p>
+        <ul className="career-bullets">{job.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
+        <div className="simple-tags">{job.tech.map((tech) => <span key={tech}>{tech}</span>)}</div>
+      </div>
+      <ArrowUpRight className="career-arrow" size={22} strokeWidth={1.5} aria-hidden="true" />
+    </article>
+  )
+}
+
+function Recognition({ item, index }: { item: Achievement; index: number }) {
+  return (
+    <article className="recognition-card">
+      {item.image && (
+        <div className="recognition-image-wrap">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={a.image}
-            alt=""
-            aria-hidden
-            className="crt-photo max-h-56 w-auto object-contain"
-            draggable={false}
-          />
-          <div className="crt-portrait-scan pointer-events-none absolute inset-0" aria-hidden />
+          <img src={item.image} alt={item.title + " event"} loading="lazy" className="recognition-image" />
         </div>
       )}
-      <div className="p-4 sm:p-5">
-        <h3 className="font-display text-base text-foreground text-glow sm:text-lg">{a.title}</h3>
-        <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-warning">
-          <Trophy className="h-4 w-4 shrink-0" /> {a.result}
-        </p>
-        <p className="mt-1 text-xs text-primary text-glow">
-          {[a.event, a.team && `Team ${a.team}`, a.date].filter(Boolean).join(" · ")}
-        </p>
-        {a.org && <p className="text-xs text-muted-foreground">{a.org}</p>}
-        {a.role && (
-          <p className="mt-1 text-xs text-muted-foreground">
-            Role: <span className="text-foreground">{a.role}</span>
-          </p>
-        )}
-        <p className="mt-3 text-sm text-muted-foreground">{a.description}</p>
-        {a.members && (
-          <div className="mt-3">
-            <h4 className="mb-1.5 text-xs uppercase tracking-wider text-muted-foreground">Team</h4>
-            <div className="flex flex-wrap gap-1.5">
-              {a.members.map((m) => (
-                <span key={m} className="border border-border px-1.5 py-0.5 text-[11px] text-muted-foreground">
-                  {m}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
+      <div className="recognition-body">
+        <span className="eyebrow">Distinction / {String(index + 1).padStart(2, "0")}</span>
+        <h3>{item.title}</h3>
+        <p className="recognition-result">{item.result}</p>
+        <p className="recognition-meta">{[item.role, item.date].filter(Boolean).join(" · ")}</p>
+        <p className="recognition-copy">{item.description}</p>
       </div>
     </article>
   )
 }
 
 export default function Portfolio() {
-  const [featured, ...rest] = experience
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <>
-      <BootSequence onDone={() => {}} />
+      <a href="#work" className="skip-link">Skip to selected work</a>
+      <div className="site-shell">
+        <header className="site-header">
+          <a className="wordmark" href="#top" aria-label="Benedict Illustrisimo, return to top">
+            <span className="wordmark-mark">g<span>.</span></span>
+            <span className="wordmark-name">Gio Illustrisimo <small>Developer & maker</small></span>
+          </a>
+          <nav className="desktop-nav" aria-label="Main navigation">
+            {navigation.map((item) => <a href={item.href} key={item.href}>{item.label}</a>)}
+          </nav>
+          <a className="nav-cta" href={"mailto:" + profile.email}>
+            Let&apos;s talk <ArrowUpRight size={17} aria-hidden="true" />
+          </a>
+          <button
+            type="button"
+            className="mobile-menu-button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X size={25} /> : <Menu size={25} />}
+          </button>
+          <nav
+            id="mobile-navigation"
+            className={"mobile-nav " + (menuOpen ? "mobile-nav-open" : "")}
+            aria-label="Mobile navigation"
+            inert={!menuOpen}
+          >
+            {navigation.map((item) => (
+              <a href={item.href} key={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>
+            ))}
+          </nav>
+        </header>
 
-      <AsciiBackground />
-      <AmbientCanvas />
-      <CursorFx />
-      <SystemBar />
-      <CrtOverlay />
-      <CommandMenu />
-      <Konami />
+        <main id="top">
+          <section className="hero" aria-labelledby="hero-title">
+            <div className="hero-copy">
+              <div className="hero-overline"><span className="overline-dot" /> Independent software developer <span className="hero-issue">Portfolio, 2026</span></div>
+              <h1 id="hero-title">Code with<br /><em>curiosity.</em><br />Built with <span className="hero-feeling">feeling<span className="period">.</span></span></h1>
+              <p className="hero-intro">I&apos;m {profile.name.split(" ")[0]}, a full-stack developer and AI engineer crafting thoughtful digital experiences — where engineering meets a little artistry.</p>
+              <div className="hero-actions">
+                <a href="#work" className="primary-button">Explore my work <ArrowDownRight size={19} aria-hidden="true" /></a>
+                <a href="#about" className="text-link">A little about me <ArrowUpRight size={17} aria-hidden="true" /></a>
+              </div>
+              <div className="hero-footnote"><MapPin size={14} aria-hidden="true" /> {profile.location} <span className="footnote-line" aria-hidden="true" /> Open to meaningful collaborations</div>
+            </div>
+            <div className="hero-art-column">
+              <div className="hero-art-bloom hero-art-bloom-one" aria-hidden="true" />
+              <div className="hero-art-bloom hero-art-bloom-two" aria-hidden="true" />
+              <div className="hero-art-frame">
+                {/* Public-domain reproduction of Claude Monet's Water Lilies (1906). */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className="hero-art-image" src={artwork.image} alt="Claude Monet's Water Lilies, 1906: a calm pond of blue, green, and lavender reflections" fetchPriority="high" />
+                <div className="hero-art-grain" aria-hidden="true" />
+                <div className="hero-art-label"><span>No. 01 / On light & possibility</span><strong>Inspired by the art of seeing differently.</strong></div>
+              </div>
+              <div className="art-side-note" aria-hidden="true">an impression of possibility <span>↗</span></div>
+              <span className="art-edition">/ The art of building</span>
+            </div>
+          </section>
 
-      <SegmentScroller segments={SEGMENTS}>
-        {/* 00 PROFILE */}
-        <div id="profile" data-segment="profile">
-          <TerminalHero />
-        </div>
+          <div className="marquee-note" aria-label="Areas of practice">
+            <span>01 — Design-minded development</span><span className="note-flower">✳</span>
+            <span>02 — AI & intelligent systems</span><span className="note-flower">✳</span>
+            <span>03 — Thoughtful experiences</span>
+          </div>
 
-        {/* 01 EXPERIENCE */}
-        <Segment id="experience">
-          <Reveal>
-            <SectionHeading command="cat experience.log" title="Experience" />
-          </Reveal>
-          <div className="space-y-4">
+          <section className="section work-section" id="work" aria-labelledby="work-heading">
             <Reveal>
-              <JobCard job={featured} />
+              <SectionTitle id="work-heading" index="01" eyebrow="The collection" title="Selected" accent="works" intro="A selection of projects at the intersection of curiosity, utility, and technology. Each one is a study in making something matter." />
             </Reveal>
-            <div className="grid gap-4 md:grid-cols-2">
-              {rest.map((job, i) => (
-                <Reveal key={job.org} delay={(i + 1) * 50}>
-                  <JobCard job={job} />
+            <div className="project-grid">
+              {projects.map((project, index) => (
+                <Reveal key={project.id} delay={(index % 2) * 110}>
+                  <ProjectCard project={project} index={index} />
                 </Reveal>
               ))}
             </div>
-          </div>
-        </Segment>
+            <a href={profile.links.github} target="_blank" rel="noopener noreferrer" className="view-more-link">
+              Explore more on GitHub <ArrowUpRight size={19} aria-hidden="true" />
+            </a>
+          </section>
 
-        {/* 02 EDUCATION */}
-        <Segment id="education">
-          <Reveal>
-            <SectionHeading command="cat education.log" title="Education" />
-          </Reveal>
-          <Reveal>
-            <article className="border border-border bg-background/40 p-4 sm:p-6">
-              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                <h3 className="inline-flex items-center gap-2 font-display text-base text-foreground text-glow sm:text-lg">
-                  <GraduationCap className="h-4 w-4 text-primary" />
-                  {education.degree}
-                </h3>
-                <span className="text-[11px] tabular-nums text-muted-foreground">{education.period}</span>
+          <section className="about-section" id="about" aria-labelledby="about-heading">
+            <div className="about-image-column">
+              <div className="portrait-backdrop" />
+              <div className="portrait-frame">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/portrait-web.webp" alt="Portrait of Benedict Gio Illustrisimo" loading="lazy" />
               </div>
-              <p className="text-sm text-primary text-glow">{education.school}</p>
-
-              <h4 className="mt-5 text-xs uppercase tracking-wider text-muted-foreground">Coursework</h4>
-              <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground sm:grid-cols-3">
-                {education.coursework.map((c) => (
-                  <span key={c} className="flex gap-2">
-                    <span className="text-primary">+</span> {c}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                <div>
-                  <h4 className="text-xs uppercase tracking-wider text-muted-foreground">Achievements</h4>
-                  <div className="mt-2 space-y-1">
-                    {education.achievements.map((a) => (
-                      <p key={a} className="flex items-center gap-2 text-sm text-foreground">
-                        <Award className="h-4 w-4 shrink-0 text-primary" /> {a}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-xs uppercase tracking-wider text-muted-foreground">Certifications</h4>
-                  <div className="mt-2 space-y-1">
-                    {certifications.map((c) => (
-                      <p key={c} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <ScrollText className="h-4 w-4 shrink-0 text-primary" /> {c}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </article>
-          </Reveal>
-        </Segment>
-
-        {/* 03 SKILLS */}
-        <Segment id="skills">
-          <Reveal>
-            <SectionHeading command="run ./skills --report" title="Skills" />
-          </Reveal>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {skillGroups.map((group, i) => (
-              <Reveal key={group.label} delay={i * 50}>
-                <article className="h-full border border-border bg-background/40 p-4">
-                  <h3 className="mb-4 font-display text-sm tracking-wider text-primary text-glow">{group.label}</h3>
-                  <div className="space-y-3">
-                    {group.skills.map((s) => (
-                      <AsciiMeter key={s.name} label={s.name} level={s.level} />
-                    ))}
-                  </div>
-                </article>
+              <span className="portrait-caption">A human behind the code — Cebu, Philippines</span>
+            </div>
+            <div className="about-text-column">
+              <Reveal>
+                <span className="eyebrow"><span className="section-index">02</span> / The person behind the work</span>
+                <h2 className="section-title about-title" id="about-heading">More than just <em>lines of code.</em></h2>
+                <p className="about-lead">I believe the most meaningful technology is both beautifully considered and genuinely useful.</p>
+                <p className="about-paragraph">My work lives between full-stack engineering, artificial intelligence, and thoughtful product experiences. I enjoy turning complex problems into interfaces and systems that feel intuitive — without losing the depth underneath.</p>
+                <p className="about-paragraph">Away from the editor, I&apos;m always learning, exploring ideas, and looking for new ways to make technology feel more human.</p>
+                <div className="about-education"><span className="eyebrow">Education</span><strong>{education.degree}</strong><span>{education.school} · {education.period}</span></div>
               </Reveal>
-            ))}
-          </div>
+            </div>
+          </section>
 
-          <Reveal className="mt-4">
-            <article className="grid gap-x-6 gap-y-3 border border-border bg-background/40 p-4 sm:grid-cols-3">
-              {Object.entries(skillTags).map(([label, tags]) => (
-                <div key={label}>
-                  <span className="text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
-                  <div className="mt-1.5 flex flex-wrap gap-1.5">
-                    {tags.map((t) => (
-                      <span
-                        key={t}
-                        className="snap border border-border px-1.5 py-0.5 text-[11px] text-muted-foreground hover:border-primary hover:text-primary"
-                      >
-                        {t}
-                      </span>
-                    ))}
+          <section className="section expertise-section" aria-labelledby="expertise-heading">
+            <Reveal>
+              <SectionTitle id="expertise-heading" index="03" eyebrow="What I bring" title="The tools of" accent="my craft" intro="A broad toolkit, with an eye for the details that make products feel complete." />
+            </Reveal>
+            <div className="expertise-grid">
+              {skillGroups.map((group, index) => (
+                <Reveal key={group.label} delay={index * 70}>
+                  <div className="expertise-card">
+                    <div className="expertise-mark">{String(index + 1).padStart(2, "0")}</div>
+                    <h3>{group.label.toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase())}</h3>
+                    <div className="expertise-tags">{group.skills.map((skill) => <span key={skill.name}>{skill.name}</span>)}</div>
                   </div>
-                </div>
+                </Reveal>
               ))}
-            </article>
-          </Reveal>
-        </Segment>
+            </div>
+            <div className="supporting-skills">
+              {Object.entries(skillTags).map(([label, tags]) => (
+                <div key={label}><span className="eyebrow">{label}</span><p>{tags.join(" · ")}</p></div>
+              ))}
+            </div>
+          </section>
 
-        {/* 04 PROJECTS */}
-        <Segment id="projects">
-          <Reveal>
-            <SectionHeading command={`ls -la /projects  # ${projects.length} modules`} title="Projects" />
-          </Reveal>
-          <div className="grid gap-3 md:grid-cols-2">
-            {projects.map((p, i) => (
-              <Reveal key={p.id} delay={i * 30}>
-                <ProjectModule project={p} index={i} />
-              </Reveal>
-            ))}
-          </div>
-        </Segment>
+          <section className="section career-section" id="experience" aria-labelledby="experience-heading">
+            <Reveal>
+              <SectionTitle id="experience-heading" index="04" eyebrow="The journey" title="Places I've" accent="grown" intro="Learning by doing, working alongside people, and making ideas real." />
+            </Reveal>
+            <div className="career-list">
+              {experience.map((job, index) => (
+                <Reveal key={job.org} delay={index * 65}><CareerEntry job={job} index={index} /></Reveal>
+              ))}
+            </div>
+            <div className="education-ribbon">
+              <span className="eyebrow">Learning never stops</span>
+              <p>{education.achievements.join(" · ")} <span aria-hidden="true">✳</span> {certifications.join(" · ")}</p>
+            </div>
+          </section>
 
-        {/* 05 ACHIEVEMENTS */}
-        <Segment id="achievements">
-          <Reveal>
-            <SectionHeading command="cat achievements.log" title="Achievements" />
-          </Reveal>
-          <div className="grid items-start gap-4 md:grid-cols-2">
-            {achievements.map((a, i) => (
-              <Reveal key={a.id} delay={i * 50}>
-                <AchievementCard a={a} />
-              </Reveal>
-            ))}
-          </div>
+          <section className="section recognition-section" id="recognition" aria-labelledby="recognition-heading">
+            <Reveal>
+              <SectionTitle id="recognition-heading" index="05" eyebrow="Milestones" title="Moments worth" accent="remembering" intro="Recognition is lovely. The collaborative effort and lessons along the way matter even more." />
+            </Reveal>
+            <div className="recognition-grid">
+              {achievements.map((item, index) => (
+                <Reveal key={item.id} delay={index * 100}><Recognition item={item} index={index} /></Reveal>
+              ))}
+            </div>
+          </section>
 
-          <footer className="mt-8 border-t border-border pt-5 text-center text-xs text-muted-foreground">
-            <p className="inline-flex items-center gap-1.5">
-              <MapPin className="h-3.5 w-3.5" /> {profile.location}
-            </p>
-            <p className="mt-2">
-              <span className="text-primary">&gt;</span> session active · {profile.name} · © 2026
-            </p>
-            <p className="mt-1 opacity-60">built with next.js + tailwind · powered by curiosity</p>
-          </footer>
-        </Segment>
-      </SegmentScroller>
+          <section className="contact-section" id="contact" aria-labelledby="contact-heading">
+            <div className="contact-orb contact-orb-one" aria-hidden="true" />
+            <div className="contact-orb contact-orb-two" aria-hidden="true" />
+            <div className="contact-inner">
+              <span className="eyebrow">06 / An open invitation</span>
+              <h2 id="contact-heading">Let's make<br />something <em>beautifully useful.</em></h2>
+              <p>Have a problem worth solving, an interesting idea, or just a question? I&apos;d love to hear about it.</p>
+              <a href={"mailto:" + profile.email} className="contact-button">Start a conversation <ArrowUpRight size={21} aria-hidden="true" /></a>
+              <div className="contact-socials">
+                <a href={profile.links.github} target="_blank" rel="noopener noreferrer"><Github size={17} aria-hidden="true" /> GitHub <ArrowUpRight size={14} aria-hidden="true" /></a>
+                <a href={profile.links.linkedin} target="_blank" rel="noopener noreferrer"><Linkedin size={17} aria-hidden="true" /> LinkedIn <ArrowUpRight size={14} aria-hidden="true" /></a>
+                <a href={"mailto:" + profile.email}><Mail size={17} aria-hidden="true" /> Email <ArrowUpRight size={14} aria-hidden="true" /></a>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <footer className="site-footer">
+          <a className="footer-mark" href="#top">g<span>.</span></a>
+          <p>© {new Date().getFullYear()} {profile.name}. Made with intention.</p>
+          <p className="art-credit">Artwork: <a href={artwork.source} target="_blank" rel="noopener noreferrer">Claude Monet, <em>Water Lilies</em> (1906)</a> · Public domain</p>
+          <a href="#top" className="back-to-top">Back to top <ArrowRight size={16} aria-hidden="true" /></a>
+        </footer>
+      </div>
     </>
   )
 }

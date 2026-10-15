@@ -1,43 +1,37 @@
-import type React from "react"
 import type { Metadata } from "next"
-import { GeistSans } from "geist/font/sans"
-import { GeistMono } from "geist/font/mono"
-import { Anton, VT323 } from "next/font/google"
+import type { ReactNode } from "react"
+import { Cormorant_Garamond, DM_Sans } from "next/font/google"
 import ClientLayout from "./ClientLayout"
 import "./globals.css"
 
-// Chunky condensed display face for headings / big type.
-const displayFace = Anton({
-  weight: "400",
+const editorialFont = Cormorant_Garamond({
   subsets: ["latin"],
-  variable: "--font-display-face",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-editorial",
   display: "swap",
 })
 
-// CRT pixel-terminal face for boot text and small system labels.
-const terminalFace = VT323({
-  weight: "400",
+const interfaceFont = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-terminal-face",
+  variable: "--font-interface",
   display: "swap",
 })
 
 export const metadata: Metadata = {
-  title: "ILLUSTRISIMO_OS // Benedict Gio B. Illustrisimo",
+  title: "Benedict Gio Illustrisimo — Full-Stack Developer & AI Engineer",
   description:
-    "Full-Stack Developer / AI Engineer. A retro CRT terminal portfolio by Benedict Gio B. Illustrisimo.",
+    "A thoughtfully crafted portfolio of software engineering, AI systems, and digital experiences by Benedict Gio Illustrisimo, based in Cebu, Philippines.",
+  openGraph: {
+    title: "Benedict Gio Illustrisimo — Developer & Maker",
+    description: "Code with curiosity. Built with feeling.",
+    type: "website",
+  },
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`font-mono ${GeistSans.variable} ${GeistMono.variable} ${displayFace.variable} ${terminalFace.variable} antialiased`}
-      >
+    <html lang="en">
+      <body className={interfaceFont.variable + " " + editorialFont.variable}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
