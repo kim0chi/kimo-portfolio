@@ -5,6 +5,7 @@ import {
   ArrowDownRight,
   ArrowRight,
   ArrowUpRight,
+  Download,
   Github,
   Linkedin,
   Mail,
@@ -27,7 +28,8 @@ import {
 } from "@/lib/content"
 
 const artwork = {
-  image: "https://upload.wikimedia.org/wikipedia/commons/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg",
+  // Self-hosted crop of the public-domain Wikimedia scan, sized for the hero frame.
+  image: "/monet-water-lilies-1906.webp",
   source: "https://commons.wikimedia.org/wiki/File:Claude_Monet_-_Water_Lilies_-_1906,_Ryerson.jpg",
 }
 
@@ -117,7 +119,12 @@ function ProjectArt({ project, index }: { project: Project; index: number }) {
         // eslint-disable-next-line @next/next/no-img-element
         <img className="project-art-image" src={project.image} alt="" loading="lazy" />
       ) : (
-        <span className="project-art-word" aria-hidden="true">{project.title}</span>
+        <span
+          className={"project-art-word " + (project.title.length > 12 ? "project-art-word--long" : "")}
+          aria-hidden="true"
+        >
+          {project.title}
+        </span>
       )}
       <span className="project-art-caption">Selected work · {String(index + 1).padStart(2, "0")}</span>
     </div>
@@ -173,7 +180,6 @@ function CareerEntry({ job, index }: { job: Experience; index: number }) {
         <ul className="career-bullets">{job.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
         <div className="simple-tags">{job.tech.map((tech) => <span key={tech}>{tech}</span>)}</div>
       </div>
-      <ArrowUpRight className="career-arrow" size={22} strokeWidth={1.5} aria-hidden="true" />
     </article>
   )
 }
@@ -256,7 +262,7 @@ export default function Portfolio() {
               <div className="hero-art-frame">
                 {/* Public-domain reproduction of Claude Monet's Water Lilies (1906). */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="hero-art-image" src={artwork.image} alt="Claude Monet's Water Lilies, 1906: a calm pond of blue, green, and lavender reflections" fetchPriority="high" />
+                <img className="hero-art-image" src={artwork.image} alt="Claude Monet's Water Lilies, 1906: a calm pond of blue, green, and lavender reflections" width={1000} height={1250} fetchPriority="high" />
                 <div className="hero-art-grain" aria-hidden="true" />
                 <div className="hero-art-label"><span>No. 01 / On light & possibility</span><strong>Inspired by the art of seeing differently.</strong></div>
               </div>
@@ -304,6 +310,7 @@ export default function Portfolio() {
                 <p className="about-paragraph">My work lives between full-stack engineering, artificial intelligence, and thoughtful product experiences. I enjoy turning complex problems into interfaces and systems that feel intuitive — without losing the depth underneath.</p>
                 <p className="about-paragraph">Away from the editor, I&apos;m always learning, exploring ideas, and looking for new ways to make technology feel more human.</p>
                 <div className="about-education"><span className="eyebrow">Education</span><strong>{education.degree}</strong><span>{education.school} · {education.period}</span></div>
+                <a href={profile.resume} download className="text-link about-resume">Download my CV <Download size={16} aria-hidden="true" /></a>
               </Reveal>
             </div>
           </section>
@@ -368,6 +375,7 @@ export default function Portfolio() {
                 <a href={profile.links.github} target="_blank" rel="noopener noreferrer"><Github size={17} aria-hidden="true" /> GitHub <ArrowUpRight size={14} aria-hidden="true" /></a>
                 <a href={profile.links.linkedin} target="_blank" rel="noopener noreferrer"><Linkedin size={17} aria-hidden="true" /> LinkedIn <ArrowUpRight size={14} aria-hidden="true" /></a>
                 <a href={"mailto:" + profile.email}><Mail size={17} aria-hidden="true" /> Email <ArrowUpRight size={14} aria-hidden="true" /></a>
+                <a href={profile.resume} download><Download size={17} aria-hidden="true" /> CV</a>
               </div>
             </div>
           </section>

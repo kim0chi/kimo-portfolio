@@ -30,8 +30,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={interfaceFont.variable + " " + editorialFont.variable}>
+    // Font variables live on <html> so the :root tokens in globals.css can resolve them.
+    <html lang="en" className={interfaceFont.variable + " " + editorialFont.variable}>
+      <body>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

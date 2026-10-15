@@ -124,6 +124,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--teal); outline-
 .project-card:hover .project-art-orb { transform: scale(1.18) translate(7%, -4%); }
 .project-art-word { font-family: var(--font-serif); font-size: clamp(64px, 8vw, 125px); font-style: italic; letter-spacing: -.075em; font-weight: 500; color: rgba(37,76,80,.74); text-align: center; z-index: 1; transform: rotate(-8deg); transition: transform .6s; }
 .project-card:hover .project-art-word { transform: rotate(-4deg) scale(1.035); }
+.project-art-word--long { max-width: 82%; font-size: clamp(44px, 4.6vw, 76px); line-height: .95; }
 .project-art-image { position: relative; z-index: 1; display: block; width: 45%; max-width: 250px; max-height: 65%; height: auto; object-fit: contain; filter: drop-shadow(0 12px 18px rgba(36,61,63,.12)); transition: transform .5s; }
 .project-card:hover .project-art-image { transform: scale(1.055) rotate(-2deg); }
 .project-art-number { position: absolute; z-index: 2; top: 20px; left: 25px; font-family: var(--font-serif); font-size: 23px; color: rgba(33,71,73,.65); }
@@ -138,7 +139,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--teal); outline-
 .project-action { flex: 0 0 auto; display: grid; place-items: center; width: 43px; height: 43px; border: 1px solid var(--line); border-radius: 50%; transition: background .3s, color .3s, transform .3s; }
 .project-action:hover { background: var(--ink); color: #fff; transform: rotate(45deg); }
 .project-tagline { margin: 17px 0 0; font-size: 13px; font-weight: 650; color: var(--teal); }
-.project-description { margin: 15px 0 0; color: var(--muted); font-size: 12px; line-height: 1.87; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+.project-description { margin: 15px 0 0; color: var(--muted); font-size: 14px; line-height: 1.8; }
 .project-award { margin: 20px 0 0; font-size: 11px; color: #8b6b4f; }
 .project-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 25px; }
 .project-tags span, .simple-tags span { border: 1px solid var(--line); padding: 6px 10px; border-radius: 30px; font-size: 10px; color: var(--muted); }
@@ -157,11 +158,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--teal); outline-
 .about-text-column { display: flex; flex-direction: column; justify-content: center; padding: clamp(60px, 9vw, 135px) clamp(35px, 7vw, 115px); }
 .about-title { margin-bottom: 32px; }
 .about-lead { margin: 0 0 20px; max-width: 510px; font-family: var(--font-serif); font-size: clamp(25px, 2.8vw, 38px); line-height: 1.15; }
-.about-paragraph { max-width: 510px; margin: 0 0 17px; color: var(--muted); font-size: 13px; line-height: 1.95; }
+.about-paragraph { max-width: 510px; margin: 0 0 17px; color: var(--muted); font-size: 14px; line-height: 1.95; }
 .about-education { display: flex; flex-direction: column; gap: 9px; border-top: 1px solid var(--line); margin-top: 28px; padding-top: 27px; }
 .about-education .eyebrow { color: var(--teal); }
 .about-education strong { font-size: 13px; }
 .about-education > span:last-child { color: var(--muted); font-size: 12px; }
+.about-resume { margin-top: 26px; color: var(--teal); }
 
 /* Expertise */
 .expertise-section { background: #f3f2eb; }
@@ -182,17 +184,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--teal); outline-
 /* Experience */
 .career-section { background: var(--paper); }
 .career-list { border-top: 1px solid var(--line); }
-.career-entry { display: grid; grid-template-columns: 220px minmax(0,1fr) 28px; gap: 36px; padding: 33px 0 38px; border-bottom: 1px solid var(--line); }
+.career-entry { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 36px; padding: 33px 0 38px; border-bottom: 1px solid var(--line); }
 .career-when { display: flex; flex-direction: column; gap: 17px; color: var(--muted); font-size: 11px; }
 .career-index { font-family: var(--font-serif); font-size: 33px; color: var(--rose); }
 .career-body h3 { margin: 0; font-family: var(--font-serif); font-size: clamp(28px, 3vw, 43px); font-weight: 500; line-height: 1.05; letter-spacing: -.03em; }
 .career-org { margin-top: 11px; font-size: 13px; font-weight: 650; color: var(--teal); }
 .career-org span { font-weight: 400; color: var(--muted); }
-.career-bullets { max-width: 700px; margin: 15px 0 18px; padding-left: 18px; color: var(--muted); font-size: 12px; line-height: 1.85; }
+.career-bullets { max-width: 700px; margin: 15px 0 18px; padding-left: 18px; color: var(--muted); font-size: 14px; line-height: 1.8; }
 .career-bullets li { margin: 0 0 8px; padding-left: 3px; }
 .career-bullets li::marker { color: var(--rose); }
 .simple-tags { display: flex; flex-wrap: wrap; gap: 7px; }
-.career-arrow { margin-top: 11px; color: var(--teal); }
 .education-ribbon { margin-top: 45px; display: grid; grid-template-columns: 220px 1fr; gap: 36px; align-items: baseline; }
 .education-ribbon .eyebrow { color: var(--teal); }
 .education-ribbon p { margin: 0; font-family: var(--font-serif); font-size: clamp(19px, 2vw, 28px); line-height: 1.4; }
@@ -210,7 +211,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--teal); outline-
 .recognition-body h3 { margin: 15px 0; font-family: var(--font-serif); font-size: clamp(28px, 3vw, 40px); line-height: 1.05; font-weight: 550; letter-spacing: -.02em; }
 .recognition-result { margin: 0; color: #8d706b; font-weight: 700; font-size: 12px; }
 .recognition-meta { margin: 11px 0; color: var(--muted); font-size: 11px; }
-.recognition-copy { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; margin-top: 15px; line-height: 1.9; color: var(--muted); font-size: 12px; }
+.recognition-copy { margin-top: 15px; line-height: 1.8; color: var(--muted); font-size: 14px; }
 
 /* Final invitation */
 .contact-section { position: relative; overflow: hidden; isolation: isolate; background: #29494c; color: #f5f2ea; min-height: 680px; display: grid; place-items: center; text-align: center; padding: 100px 24px; }
@@ -250,7 +251,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--teal); outline-
   .section { padding-inline: 48px; }
   .about-image-column { padding: 35px; }
   .about-text-column { padding-inline: 60px; }
-  .career-entry { grid-template-columns: 150px minmax(0,1fr) 24px; }
+  .career-entry { grid-template-columns: 150px minmax(0,1fr); }
   .education-ribbon { grid-template-columns: 150px 1fr; }
 }
 
@@ -282,7 +283,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--teal); outline-
   .expertise-grid, .supporting-skills { grid-template-columns: 1fr; }
   .expertise-card { min-height: 0; }
   .supporting-skills { gap: 20px; }
-  .career-entry { grid-template-columns: 130px minmax(0,1fr) 20px; gap: 22px; }
+  .career-entry { grid-template-columns: 130px minmax(0,1fr); gap: 22px; }
   .education-ribbon { grid-template-columns: 1fr; gap: 15px; }
   .recognition-grid { grid-template-columns: 1fr; }
   .contact-section { min-height: 600px; }
@@ -313,6 +314,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--teal); outline-
   .project-grid > .soft-reveal:first-child { grid-column: auto; }
   .project-art, .project-card-featured .project-art { aspect-ratio: 1.35; min-height: 250px; }
   .project-art-word { font-size: clamp(60px, 16vw, 90px); }
+  .project-art-word--long { font-size: clamp(40px, 10.5vw, 58px); }
   .project-details { padding: 25px; }
   .project-title { font-size: 49px; }
   .about-image-column { min-height: 490px; }
@@ -320,12 +322,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--teal); outline-
   .portrait-caption { bottom: 18px; font-size: 18px; }
   .about-text-column { padding: 68px 27px; }
   .expertise-card h3 { font-size: 32px; }
-  .career-entry { display: block; position: relative; padding: 28px 0; }
+  .career-entry { display: block; padding: 28px 0; }
   .career-when { flex-direction: row; align-items: center; gap: 15px; margin-bottom: 17px; }
   .career-index { font-size: 24px; }
   .career-when span:last-child { font-size: 10px; }
-  .career-body h3 { padding-right: 30px; }
-  .career-arrow { position: absolute; top: 42px; right: 0; }
   .recognition-body { padding: 24px; }
   .contact-section { padding: 85px 26px; }
   .contact-inner h2 { font-size: clamp(57px, 13.5vw, 80px); }
