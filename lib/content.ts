@@ -184,7 +184,7 @@ export const projects: Project[] = [
     description:
       "A post-ASR error-correction and summarization pipeline for English–Tagalog classroom lecture transcripts. Combines Whisper, Wav2Vec 2.0, mT5, and T5 with inference-API LLMs (Gemini, Groq, OpenAI) for refinement, served over authenticated FastAPI endpoints.",
     tech: ["Next.js", "Python", "FastAPI", "Whisper", "Supabase", "GCP"],
-    image: "/pulox-logo.png",
+    image: "/pulox-logo.webp",
     liveUrl: "https://pulox-kim0chis-projects.vercel.app/",
     githubUrl: "https://github.com/kim0chi/Pulox",
   },
@@ -195,7 +195,7 @@ export const projects: Project[] = [
     description:
       "A Progressive Web App that helps teachers record grades, monitor attendance, generate reports, and analyze class performance trends in real time — eliminating manual spreadsheet grading with one platform that works on desktop and mobile.",
     tech: ["Next.js", "TypeScript", "PostgreSQL", "Tailwind"],
-    image: "/gradiant-logo.png",
+    image: "/gradiant-logo.webp",
     liveUrl: "https://v0-maintenance-page-design-beta.vercel.app/",
     githubUrl: "https://github.com/kim0chi/gradiant",
   },
@@ -206,7 +206,7 @@ export const projects: Project[] = [
     description:
       "A student enrollment system with a multi-approval workflow and role-based access control, built on ASP.NET Core MVC with a PostgreSQL database and deployed to Azure.",
     tech: ["ASP.NET Core", "C#", "Razor Pages", "PostgreSQL", "Azure"],
-    image: "/CampusFlow.png",
+    image: "/CampusFlow.webp",
     liveUrl: "https://campusflow-b3hfdmbhbwhecgda.southeastasia-01.azurewebsites.net",
     githubUrl: "https://github.com/kim0chi/CampusFlow",
   },
