@@ -1,393 +1,212 @@
 "use client"
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react"
-import {
-  ArrowDownRight,
-  ArrowRight,
-  ArrowUpRight,
-  Download,
-  Github,
-  Linkedin,
-  Mail,
-  MapPin,
-  Menu,
-  X,
-} from "lucide-react"
-import {
-  achievements,
-  certifications,
-  education,
-  experience,
-  profile,
-  projects,
-  skillGroups,
-  skillTags,
-  type Achievement,
-  type Experience,
-  type Project,
-} from "@/lib/content"
-
-const artwork = {
-  // Self-hosted crop of the public-domain Wikimedia scan, sized for the hero frame.
-  image: "/monet-water-lilies-1906.webp",
-  source: "https://commons.wikimedia.org/wiki/File:Claude_Monet_-_Water_Lilies_-_1906,_Ryerson.jpg",
-}
+import { useRef, useState, type CSSProperties } from "react"
+import { Menu, X } from "lucide-react"
+import { achievements, certifications, education, experience, profile, projects, skillGroups, skillTags } from "@/lib/content"
+import { paintings } from "@/lib/paintings"
+import { PondBackground, REPLAY_INTRO_EVENT } from "@/components/pond/pond-background"
+import { PaintingSwitcher } from "@/components/pond/painting-switcher"
+import { usePainting } from "@/components/pond/painting-store"
+import { GlassPanel } from "@/components/glass/glass-panel"
+import { GlassScene } from "@/components/glass/glass-scene"
+import { useLiquidGlass } from "@/components/glass/use-liquid-glass"
+import { WorkRows } from "@/components/work/work-rows"
 
 const navigation = [
   { href: "#work", label: "Work" },
-  { href: "#about", label: "About" },
   { href: "#experience", label: "Experience" },
+  { href: "#about", label: "About" },
   { href: "#contact", label: "Contact" },
 ]
 
-function Reveal({
-  children,
-  className = "",
-  delay = 0,
-}: {
-  children: ReactNode
-  className?: string
-  delay?: number
-}) {
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const element = ref.current
-    if (!element || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
-    if (!("IntersectionObserver" in window)) return
-
-    element.classList.add("reveal-pending")
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          element.classList.add("reveal-visible")
-          observer.unobserve(element)
-        }
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
-    )
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [])
-
-  return (
-    <div
-      ref={ref}
-      className={"soft-reveal " + className}
-      style={{ "--reveal-delay": delay + "ms" } as CSSProperties}
-    >
-      {children}
-    </div>
-  )
-}
-
-function SectionTitle({
-  index,
-  eyebrow,
-  title,
-  accent,
-  intro,
-  id,
-}: {
-  index: string
-  eyebrow: string
-  title: string
-  accent?: string
-  intro?: string
-  id?: string
-}) {
-  return (
-    <div className="section-heading">
-      <div className="section-heading-copy">
-        <span className="eyebrow"><span className="section-index">{index}</span> / {eyebrow}</span>
-        <h2 className="section-title" id={id}>
-          {title}{accent && <> <em>{accent}</em></>}
-        </h2>
-      </div>
-      {intro && <p className="section-intro">{intro}</p>}
-    </div>
-  )
-}
-
-function ProjectArt({ project, index }: { project: Project; index: number }) {
-  return (
-    <div className={"project-art project-art--" + project.id}>
-      <div className="project-art-orb" aria-hidden="true" />
-      <span className="project-art-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-      {project.image ? (
-        // Existing portfolio project assets are served from /public.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img className="project-art-image" src={project.image} alt="" loading="lazy" />
-      ) : (
-        <span
-          className={"project-art-word " + (project.title.length > 12 ? "project-art-word--long" : "")}
-          aria-hidden="true"
-        >
-          {project.title}
-        </span>
-      )}
-      <span className="project-art-caption">Selected work · {String(index + 1).padStart(2, "0")}</span>
-    </div>
-  )
-}
-
-function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const destination = project.liveUrl || project.githubUrl
-
-  return (
-    <article className={"project-card " + (index === 0 ? "project-card-featured" : "")}>
-      <ProjectArt project={project} index={index} />
-      <div className="project-details">
-        <div className="project-topline">
-          <span className="eyebrow">{project.featured ? "Featured project" : "Selected project"}</span>
-          {project.status && <span className="project-status">{project.status}</span>}
-        </div>
-        <div className="project-name-row">
-          <h3 className="project-title">{project.title}</h3>
-          {destination && (
-            <a
-              className="project-action"
-              href={destination}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={"View " + project.title + " project"}
-            >
-              <ArrowUpRight size={22} strokeWidth={1.6} aria-hidden="true" />
-            </a>
-          )}
-        </div>
-        <p className="project-tagline">{project.tagline}</p>
-        <p className="project-description">{project.description}</p>
-        {project.award && <p className="project-award">✳ {project.award}</p>}
-        <div className="project-tags">
-          {project.tech.slice(0, 6).map((tech) => <span key={tech}>{tech}</span>)}
-        </div>
-      </div>
-    </article>
-  )
-}
-
-function CareerEntry({ job, index }: { job: Experience; index: number }) {
-  return (
-    <article className="career-entry">
-      <div className="career-when">
-        <span className="career-index">{String(index + 1).padStart(2, "0")}</span>
-        <span>{job.period}</span>
-      </div>
-      <div className="career-body">
-        <h3>{job.role}</h3>
-        <p className="career-org">{job.org} <span>· {job.location}</span></p>
-        <ul className="career-bullets">{job.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
-        <div className="simple-tags">{job.tech.map((tech) => <span key={tech}>{tech}</span>)}</div>
-      </div>
-    </article>
-  )
-}
-
-function Recognition({ item, index }: { item: Achievement; index: number }) {
-  return (
-    <article className="recognition-card">
-      {item.image && (
-        <div className="recognition-image-wrap">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={item.image} alt={item.title + " event"} loading="lazy" className="recognition-image" />
-        </div>
-      )}
-      <div className="recognition-body">
-        <span className="eyebrow">Distinction / {String(index + 1).padStart(2, "0")}</span>
-        <h3>{item.title}</h3>
-        <p className="recognition-result">{item.result}</p>
-        <p className="recognition-meta">{[item.role, item.date].filter(Boolean).join(" · ")}</p>
-        <p className="recognition-copy">{item.description}</p>
-      </div>
-    </article>
-  )
-}
+// "Benedict Gio B. Illustrisimo" → "Benedict Gio" / "Illustrisimo"
+const displayName = profile.name.replace(" B.", "")
+const firstNames = displayName.split(" ").slice(0, -1).join(" ")
+const lastName = displayName.split(" ").at(-1)
+const sentence = (text: string) => text.charAt(0).toUpperCase() + text.slice(1)
+const titleCase = (label: string) => label.toLowerCase().replace(/(^|\s)\S/g, (letter) => letter.toUpperCase()).replace(/\bAi\b/, "AI")
+// staggers the hero's supporting lines in the intro (see .hero-after in globals.css)
+const step = (index: number) => ({ "--i": index }) as CSSProperties
 
 export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const headerRef = useRef<HTMLElement>(null)
+  useLiquidGlass(headerRef)
+
+  const [featured, ...otherProjects] = projects
+  const featuredLink = featured.liveUrl || featured.githubUrl
+  const paintingSlug = usePainting()
+  const painting = paintings.find((candidate) => candidate.slug === paintingSlug) ?? paintings[0]
 
   return (
     <>
+      <PondBackground />
+      <GlassScene />
       <a href="#work" className="skip-link">Skip to selected work</a>
-      <div className="site-shell">
-        <header className="site-header">
-          <a className="wordmark" href="#top" aria-label="Benedict Illustrisimo, return to top">
-            <span className="wordmark-mark">g<span>.</span></span>
-            <span className="wordmark-name">Gio Illustrisimo <small>Developer & maker</small></span>
-          </a>
-          <nav className="desktop-nav" aria-label="Main navigation">
-            {navigation.map((item) => <a href={item.href} key={item.href}>{item.label}</a>)}
-          </nav>
-          <a className="nav-cta" href={"mailto:" + profile.email}>
-            Let&apos;s talk <ArrowUpRight size={17} aria-hidden="true" />
-          </a>
-          <button
-            type="button"
-            className="mobile-menu-button"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-navigation"
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            {menuOpen ? <X size={25} /> : <Menu size={25} />}
-          </button>
-          <nav
-            id="mobile-navigation"
-            className={"mobile-nav " + (menuOpen ? "mobile-nav-open" : "")}
-            aria-label="Mobile navigation"
-            inert={!menuOpen}
-          >
-            {navigation.map((item) => (
-              <a href={item.href} key={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>
-            ))}
-          </nav>
-        </header>
 
-        <main id="top">
-          <section className="hero" aria-labelledby="hero-title">
-            <div className="hero-copy">
-              <div className="hero-overline"><span className="overline-dot" /> Independent software developer <span className="hero-issue">Portfolio, 2026</span></div>
-              <h1 id="hero-title">Code with<br /><em>curiosity.</em><br />Built with <span className="hero-feeling">feeling<span className="period">.</span></span></h1>
-              <p className="hero-intro">I&apos;m {profile.name.split(" ")[0]}, a full-stack developer and AI engineer crafting thoughtful digital experiences — where engineering meets a little artistry.</p>
-              <div className="hero-actions">
-                <a href="#work" className="primary-button">Explore my work <ArrowDownRight size={19} aria-hidden="true" /></a>
-                <a href="#about" className="text-link">A little about me <ArrowUpRight size={17} aria-hidden="true" /></a>
-              </div>
-              <div className="hero-footnote"><MapPin size={14} aria-hidden="true" /> {profile.location} <span className="footnote-line" aria-hidden="true" /> Open to meaningful collaborations</div>
-            </div>
-            <div className="hero-art-column">
-              <div className="hero-art-bloom hero-art-bloom-one" aria-hidden="true" />
-              <div className="hero-art-bloom hero-art-bloom-two" aria-hidden="true" />
-              <div className="hero-art-frame">
-                {/* Public-domain reproduction of Claude Monet's Water Lilies (1906). */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="hero-art-image" src={artwork.image} alt="Claude Monet's Water Lilies, 1906: a calm pond of blue, green, and lavender reflections" width={1000} height={1250} fetchPriority="high" />
-                <div className="hero-art-grain" aria-hidden="true" />
-                <div className="hero-art-label"><span>No. 01 / On light & possibility</span><strong>Inspired by the art of seeing differently.</strong></div>
-              </div>
-              <div className="art-side-note" aria-hidden="true">an impression of possibility <span>↗</span></div>
-              <span className="art-edition">/ The art of building</span>
-            </div>
-          </section>
+      <GlassPanel as="header" kind="nav" ref={headerRef} className="site-header">
+        <a className="site-name" href="#top">{displayName}</a>
+        <nav className="desktop-nav" aria-label="Main navigation">
+          {navigation.map((item) => <a href={item.href} key={item.href}>{item.label}</a>)}
+        </nav>
+        <a className="button" href={profile.resume} download>CV</a>
+        <button
+          type="button"
+          className="mobile-menu-button"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-navigation"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+        <nav
+          id="mobile-navigation"
+          className={"mobile-nav " + (menuOpen ? "mobile-nav-open" : "")}
+          aria-label="Mobile navigation"
+          inert={!menuOpen}
+        >
+          {navigation.map((item) => (
+            <a href={item.href} key={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>
+          ))}
+        </nav>
+      </GlassPanel>
 
-          <div className="marquee-note" aria-label="Areas of practice">
-            <span>01 — Design-minded development</span><span className="note-flower">✳</span>
-            <span>02 — AI & intelligent systems</span><span className="note-flower">✳</span>
-            <span>03 — Thoughtful experiences</span>
+      <main id="top">
+        <section className="hero" aria-labelledby="hero-name">
+          <GlassPanel className="hero-copy">
+            {/* one wrapper, so the intro can surface all of it through rippling water (components/pond/surface-reveal) */}
+            <div className="hero-content">
+              <p className="hero-role hero-after" style={step(0)}>{profile.title.replace(" / ", " and ")}</p>
+              <h1 id="hero-name" className="hero-name display">
+                <span>{firstNames}</span> <span>{lastName}</span>
+              </h1>
+              <p className="hero-lede hero-after" style={step(1)}>{sentence(profile.tagline)}.</p>
+              <p className="hero-facts hero-after" style={step(2)}>{profile.location} · {profile.status}</p>
+              <div className="hero-actions hero-after" style={step(3)}>
+                <a className="button" href="#work">See my work</a>
+                <a className="button button-ghost" href={"mailto:" + profile.email}>Email me</a>
+              </div>
+            </div>
+          </GlassPanel>
+        </section>
+
+        <GlassPanel as="section" reveal className="section" id="work" aria-labelledby="work-heading">
+          <h2 id="work-heading" className="display">Selected work</h2>
+          <div className="feature">
+            <div>
+              <h3 className="display">{featured.title}</h3>
+              <p className="feature-tagline">{featured.tagline}</p>
+              <p className="feature-description">{featured.description}</p>
+            </div>
+            <aside>
+              {featured.award && <div><b>Recognition</b>{featured.award}</div>}
+              <div><b>Stack</b><span className="mono">{featured.tech.join(", ")}</span></div>
+              {featuredLink && (
+                <div>
+                  <a className="button button-ghost" href={featuredLink} target="_blank" rel="noopener noreferrer">
+                    {featured.liveUrl ? "Visit" : "View on GitHub"} →
+                  </a>
+                </div>
+              )}
+            </aside>
           </div>
+          <WorkRows projects={otherProjects} />
+        </GlassPanel>
 
-          <section className="section work-section" id="work" aria-labelledby="work-heading">
-            <Reveal>
-              <SectionTitle id="work-heading" index="01" eyebrow="The collection" title="Selected" accent="works" intro="A selection of projects at the intersection of curiosity, utility, and technology. Each one is a study in making something matter." />
-            </Reveal>
-            <div className="project-grid">
-              {projects.map((project, index) => (
-                <Reveal key={project.id} delay={(index % 2) * 110}>
-                  <ProjectCard project={project} index={index} />
-                </Reveal>
-              ))}
-            </div>
-            <a href={profile.links.github} target="_blank" rel="noopener noreferrer" className="view-more-link">
-              Explore more on GitHub <ArrowUpRight size={19} aria-hidden="true" />
-            </a>
-          </section>
+        <GlassPanel as="section" reveal className="section" id="experience" aria-labelledby="experience-heading">
+          <h2 id="experience-heading" className="display">Experience</h2>
+          <ul className="jobs">
+            {experience.map((job) => (
+              <li key={job.org}>
+                <span className="job-when mono">{job.period}</span>
+                <div>
+                  <h3 className="display">{job.role}</h3>
+                  <p className="job-org">{job.org} · {job.location}</p>
+                  <ul>{job.bullets.slice(0, 2).map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </GlassPanel>
 
-          <section className="about-section" id="about" aria-labelledby="about-heading">
-            <div className="about-image-column">
-              <div className="portrait-backdrop" />
-              <div className="portrait-frame">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/portrait-web.webp" alt="Portrait of Benedict Gio Illustrisimo" loading="lazy" />
-              </div>
-              <span className="portrait-caption">A human behind the code — Cebu, Philippines</span>
-            </div>
-            <div className="about-text-column">
-              <Reveal>
-                <span className="eyebrow"><span className="section-index">02</span> / The person behind the work</span>
-                <h2 className="section-title about-title" id="about-heading">More than just <em>lines of code.</em></h2>
-                <p className="about-lead">I believe the most meaningful technology is both beautifully considered and genuinely useful.</p>
-                <p className="about-paragraph">My work lives between full-stack engineering, artificial intelligence, and thoughtful product experiences. I enjoy turning complex problems into interfaces and systems that feel intuitive — without losing the depth underneath.</p>
-                <p className="about-paragraph">Away from the editor, I&apos;m always learning, exploring ideas, and looking for new ways to make technology feel more human.</p>
-                <div className="about-education"><span className="eyebrow">Education</span><strong>{education.degree}</strong><span>{education.school} · {education.period}</span></div>
-                <a href={profile.resume} download className="text-link about-resume">Download my CV <Download size={16} aria-hidden="true" /></a>
-              </Reveal>
-            </div>
-          </section>
-
-          <section className="section expertise-section" aria-labelledby="expertise-heading">
-            <Reveal>
-              <SectionTitle id="expertise-heading" index="03" eyebrow="What I bring" title="The tools of" accent="my craft" intro="A broad toolkit, with an eye for the details that make products feel complete." />
-            </Reveal>
-            <div className="expertise-grid">
-              {skillGroups.map((group, index) => (
-                <Reveal key={group.label} delay={index * 70}>
-                  <div className="expertise-card">
-                    <div className="expertise-mark">{String(index + 1).padStart(2, "0")}</div>
-                    <h3>{group.label.toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase())}</h3>
-                    <div className="expertise-tags">{group.skills.map((skill) => <span key={skill.name}>{skill.name}</span>)}</div>
+        <GlassPanel as="section" reveal className="section" id="recognition" aria-labelledby="recognition-heading">
+          <h2 id="recognition-heading" className="display">Recognition</h2>
+          <div className="awards">
+            {achievements.map((award) => (
+              <article className="award" key={award.id}>
+                {award.image && (
+                  <div className="award-photo">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={award.image} alt={award.title} loading="lazy" data-parallax />
                   </div>
-                </Reveal>
-              ))}
-            </div>
-            <div className="supporting-skills">
-              {Object.entries(skillTags).map(([label, tags]) => (
-                <div key={label}><span className="eyebrow">{label}</span><p>{tags.join(" · ")}</p></div>
-              ))}
-            </div>
-          </section>
+                )}
+                <div className="award-body">
+                  <h3>{award.title}</h3>
+                  <p className="award-result">{award.result}</p>
+                  <p className="award-meta mono">{[award.role, award.date].filter(Boolean).join(" · ")}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </GlassPanel>
 
-          <section className="section career-section" id="experience" aria-labelledby="experience-heading">
-            <Reveal>
-              <SectionTitle id="experience-heading" index="04" eyebrow="The journey" title="Places I've" accent="grown" intro="Learning by doing, working alongside people, and making ideas real." />
-            </Reveal>
-            <div className="career-list">
-              {experience.map((job, index) => (
-                <Reveal key={job.org} delay={index * 65}><CareerEntry job={job} index={index} /></Reveal>
-              ))}
-            </div>
-            <div className="education-ribbon">
-              <span className="eyebrow">Learning never stops</span>
-              <p>{education.achievements.join(" · ")} <span aria-hidden="true">✳</span> {certifications.join(" · ")}</p>
-            </div>
-          </section>
-
-          <section className="section recognition-section" id="recognition" aria-labelledby="recognition-heading">
-            <Reveal>
-              <SectionTitle id="recognition-heading" index="05" eyebrow="Milestones" title="Moments worth" accent="remembering" intro="Recognition is lovely. The collaborative effort and lessons along the way matter even more." />
-            </Reveal>
-            <div className="recognition-grid">
-              {achievements.map((item, index) => (
-                <Reveal key={item.id} delay={index * 100}><Recognition item={item} index={index} /></Reveal>
-              ))}
-            </div>
-          </section>
-
-          <section className="contact-section" id="contact" aria-labelledby="contact-heading">
-            <div className="contact-orb contact-orb-one" aria-hidden="true" />
-            <div className="contact-orb contact-orb-two" aria-hidden="true" />
-            <div className="contact-inner">
-              <span className="eyebrow">06 / An open invitation</span>
-              <h2 id="contact-heading">Let's make<br />something <em>beautifully useful.</em></h2>
-              <p>Have a problem worth solving, an interesting idea, or just a question? I&apos;d love to hear about it.</p>
-              <a href={"mailto:" + profile.email} className="contact-button">Start a conversation <ArrowUpRight size={21} aria-hidden="true" /></a>
-              <div className="contact-socials">
-                <a href={profile.links.github} target="_blank" rel="noopener noreferrer"><Github size={17} aria-hidden="true" /> GitHub <ArrowUpRight size={14} aria-hidden="true" /></a>
-                <a href={profile.links.linkedin} target="_blank" rel="noopener noreferrer"><Linkedin size={17} aria-hidden="true" /> LinkedIn <ArrowUpRight size={14} aria-hidden="true" /></a>
-                <a href={"mailto:" + profile.email}><Mail size={17} aria-hidden="true" /> Email <ArrowUpRight size={14} aria-hidden="true" /></a>
-                <a href={profile.resume} download><Download size={17} aria-hidden="true" /> CV</a>
+        <GlassPanel as="section" reveal className="section" id="about" aria-labelledby="about-heading">
+          <h2 id="about-heading" className="display">About</h2>
+          <p className="about-line">Building my curiosity.</p>
+          <div className="about-facts">
+            <dl>
+              <div>
+                <dt>Education</dt>
+                <dd>
+                  <strong>{education.degree}</strong>, {education.school} · <span className="mono">{education.period}</span>
+                  <br />{education.achievements.join(", ")}
+                </dd>
               </div>
-            </div>
-          </section>
-        </main>
+              <div>
+                <dt>Certifications</dt>
+                <dd>{certifications.map((certification) => <span className="about-item" key={certification}>{certification}</span>)}</dd>
+              </div>
+            </dl>
+            <dl>
+              {skillGroups.map((group) => (
+                <div key={group.label}>
+                  <dt>{titleCase(group.label)}</dt>
+                  <dd>{group.skills.map((skill) => skill.name).join(", ")}</dd>
+                </div>
+              ))}
+              <div>
+                <dt>Data and deployment</dt>
+                <dd>{[...skillTags.Databases, ...skillTags.Deployment].join(", ")}</dd>
+              </div>
+            </dl>
+          </div>
+        </GlassPanel>
 
-        <footer className="site-footer">
-          <a className="footer-mark" href="#top">g<span>.</span></a>
-          <p>© {new Date().getFullYear()} {profile.name}. Made with intention.</p>
-          <p className="art-credit">Artwork: <a href={artwork.source} target="_blank" rel="noopener noreferrer">Claude Monet, <em>Water Lilies</em> (1906)</a> · Public domain</p>
-          <a href="#top" className="back-to-top">Back to top <ArrowRight size={16} aria-hidden="true" /></a>
-        </footer>
-      </div>
+        <GlassPanel as="section" reveal className="section contact" id="contact" aria-labelledby="contact-heading">
+          <h2 id="contact-heading" className="display">Let&apos;s talk</h2>
+          <p>{profile.status}. Email is the quickest way to reach me.</p>
+          <a className="contact-mail" href={"mailto:" + profile.email}>{profile.email}</a>
+          <div className="contact-links">
+            <a href={profile.links.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            <a href={profile.links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+            <a href={profile.resume} download>Download CV ↓</a>
+          </div>
+        </GlassPanel>
+      </main>
+
+      <GlassPanel as="footer" className="site-footer">
+        <span>© {new Date().getFullYear()} {profile.name}</span>
+        {/* the Art Institute of Chicago's requested caption for its open-access images */}
+        <span>
+          Painting: Claude Monet.{" "}
+          <a href={painting.url} target="_blank" rel="noopener noreferrer">{painting.title}</a>, {painting.date}. The Art Institute of Chicago.
+        </span>
+        <button type="button" className="replay-intro" onClick={() => window.dispatchEvent(new Event(REPLAY_INTRO_EVENT))}>
+          Replay intro
+        </button>
+      </GlassPanel>
+      <PaintingSwitcher />
     </>
   )
 }
