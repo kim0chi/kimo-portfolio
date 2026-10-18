@@ -27,10 +27,11 @@ export const metadata: Metadata = {
   // the canonical address (lib/content.ts); other hosts serving the same build point here
   metadataBase: new URL(profile.links.site),
   alternates: { canonical: "/" },
-  title: "Benedict Gio Illustrisimo — Full-Stack Developer & AI Engineer",
+  title: "Kimo Portfolio",
   description: "Benedict Gio Illustrisimo, full-stack developer and AI engineer in Lapu-Lapu City, Cebu, Philippines. Selected work, experience and contact.",
   openGraph: {
-    title: "Benedict Gio Illustrisimo — Full-Stack Developer & AI Engineer",
+    title: "Kimo Portfolio",
+    siteName: "Kimo Portfolio",
     description: "Full-stack developer and AI engineer in Cebu, Philippines.",
     url: "/",
     type: "website",
