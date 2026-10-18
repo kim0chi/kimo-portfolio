@@ -3,7 +3,7 @@
 import { useEffect, useId, type RefObject } from "react"
 
 const SVG_NS = "http://www.w3.org/2000/svg"
-// How far (px) the rim bends the painting, and how wide the bending band is.
+// How far (px) the rim bends the painting, and how wide the bending band is (defaults suit the nav pill).
 const BEND = 46
 const MAX_BEZEL = 36
 
@@ -55,8 +55,8 @@ function supportsRefraction() {
   return "chrome" in window && CSS.supports("backdrop-filter", "url(#x)")
 }
 
-/** Adds Liquid Glass refraction to one small element (the nav pill). */
-export function useLiquidGlass(ref: RefObject<HTMLElement | null>) {
+/** Adds Liquid Glass refraction to one small element (the nav pill, the glass cursor). */
+export function useLiquidGlass(ref: RefObject<HTMLElement | null>, { bend = BEND, maxBezel = MAX_BEZEL } = {}) {
   const filterId = "liquid-" + useId().replace(/:/g, "")
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export function useLiquidGlass(ref: RefObject<HTMLElement | null>) {
     const displace = document.createElementNS(SVG_NS, "feDisplacementMap")
     displace.setAttribute("in", "SourceGraphic")
     displace.setAttribute("in2", "map")
-    displace.setAttribute("scale", String(BEND))
+    displace.setAttribute("scale", String(bend))
     displace.setAttribute("xChannelSelector", "R")
     displace.setAttribute("yChannelSelector", "G")
     filter.append(map, displace)
@@ -89,7 +89,7 @@ export function useLiquidGlass(ref: RefObject<HTMLElement | null>) {
       const height = Math.round(element.offsetHeight)
       if (!width || !height) return
       const radius = Math.min(height / 2, parseFloat(getComputedStyle(element).borderTopLeftRadius) || 24)
-      const url = displacementMap(width, height, radius, Math.min(MAX_BEZEL, radius * 1.4))
+      const url = displacementMap(width, height, radius, Math.min(maxBezel, radius * 1.4))
       if (!url) return
       for (const [name, value] of [["x", "0"], ["y", "0"], ["width", String(width)], ["height", String(height)]]) {
         filter.setAttribute(name, value)
@@ -110,5 +110,5 @@ export function useLiquidGlass(ref: RefObject<HTMLElement | null>) {
       element.classList.remove("liquid-ready")
       element.style.removeProperty("--liquid-filter")
     }
-  }, [ref, filterId])
+  }, [ref, filterId, bend, maxBezel])
 }
