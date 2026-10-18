@@ -107,6 +107,27 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 }
 @media (pointer: coarse) { :root { --blur: 14px; } }
 
+/* ---------- Glass cursor (components/glass/glass-cursor): a clear lens that follows the pointer ----------
+   Laid out at its largest (56 px) and scaled down, so the refraction map is built once. */
+.glass-cursor-on, .glass-cursor-on * { cursor: none !important; }
+.glass-cursor {
+  position: fixed; left: -28px; top: -28px; z-index: 9999; width: 56px; height: 56px; border-radius: 50%; pointer-events: none;
+  --a1: .14; --a2: .06; --rim: .95; --lip: .9; --spec: .35;
+  -webkit-backdrop-filter: blur(1.5px) saturate(1.5) brightness(1.06); backdrop-filter: blur(1.5px) saturate(1.5) brightness(1.06);
+  box-shadow: inset 0 1px 1px rgb(255 255 255 / .9), inset 0 -6px 12px -6px rgb(255 255 255 / .5), 0 6px 18px rgb(10 14 26 / .18);
+  opacity: 0; scale: .5; transition: opacity .2s ease, scale .35s var(--ease-out);
+}
+.glass-cursor.liquid-ready {
+  -webkit-backdrop-filter: var(--liquid-filter) saturate(1.5) brightness(1.06); backdrop-filter: var(--liquid-filter) saturate(1.5) brightness(1.06);
+}
+.glass-cursor.is-visible { opacity: 1; }
+.glass-cursor.is-over { scale: .9; --a1: .2; --a2: .1; }
+.glass-cursor.is-pressed { scale: .4; }
+.glass-cursor.is-over.is-pressed { scale: .75; }
+.glass-cursor-dot { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px; border-radius: 50%;
+  background: var(--ink); box-shadow: 0 0 0 1.5px rgb(255 255 255 / .85); transition: scale .25s var(--ease-out); }
+.glass-cursor.is-over .glass-cursor-dot { scale: .6; }
+
 /* ---------- Buttons ---------- */
 .button { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px; font-size: 15px; font-weight: 600; background: var(--ink); color: var(--on-ink); transition: transform .3s var(--ease-out), background .25s; }
 .button-ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
@@ -116,17 +137,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   .button-ghost:hover { background: rgb(255 255 255 / .3); }
 }
 
-/* ---------- Header: a floating pill; in Chromium its rim bends the painting ---------- */
+/* ---------- Header: a small floating pill of section links, centred; in Chromium its rim bends the painting ---------- */
 .site-header {
-  position: sticky; top: 14px; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  width: min(1180px, calc(100% - 32px)); margin: 14px auto 0; padding: 7px 7px 7px 20px; border-radius: 999px;
+  position: sticky; top: 14px; z-index: 20; display: flex; align-items: center; justify-content: center;
+  width: max-content; max-width: calc(100% - 32px); margin: 14px auto 0; padding: 6px; border-radius: 999px;
   --a1: .42; --a2: .34; --rim: .9; --lip: .85;
 }
 .site-header.liquid-ready {
   --a1: .36; --a2: .28;
   -webkit-backdrop-filter: var(--liquid-filter) blur(3px) saturate(1.6) brightness(1.05); backdrop-filter: var(--liquid-filter) blur(3px) saturate(1.6) brightness(1.05);
 }
-.site-name { font-size: 15px; font-weight: 640; font-variation-settings: "wdth" 112.5; white-space: nowrap; }
 .desktop-nav { display: flex; gap: 2px; }
 .desktop-nav a { padding: 9px 14px; border-radius: 999px; font-size: 15px; font-weight: 520; transition: background .25s; }
 .desktop-nav a:hover { background: rgb(255 255 255 / .38); }
@@ -157,12 +177,20 @@ main { position: relative; z-index: 1; display: grid; gap: clamp(48px, 11vh, 140
 .feature aside { display: grid; gap: 16px; align-content: start; font-size: 15px; line-height: 1.6; color: var(--muted); }
 .feature aside b { display: block; font-weight: 600; color: var(--ink); }
 .work-rows { list-style: none; margin: 0; padding: 0; }
-.work-rows a { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.5fr) auto; gap: 20px; align-items: baseline; margin: 0 -12px; padding: 20px 12px; border-radius: 14px; border-bottom: 1px solid var(--line); transition: background .3s; }
-.work-rows li:last-child a { border-bottom-color: transparent; }
+.work-rows a, .work-row { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.5fr) auto; gap: 20px; align-items: baseline; margin: 0 -12px; padding: 20px 12px; border-radius: 14px; border-bottom: 1px solid var(--line); transition: background .3s; }
+.work-rows li:last-child :is(a, .work-row) { border-bottom-color: transparent; }
+.work-row .work-go { font-weight: 500; color: var(--muted); }
 .work-rows a:hover, .work-rows a:focus-visible { background: rgb(255 255 255 / .22); }
 .work-rows h3 { margin: 0; font-size: 20px; font-weight: 640; font-variation-settings: "wdth" 106; }
 .work-rows p { margin: 0; font-size: 16px; line-height: 1.5; color: var(--muted); }
-.work-stack { display: block; margin-top: 4px; font-size: 13px; }
+.work-stack { margin-top: 8px; }
+
+/* Tech names with their logos (components/tech/tech-list), in the current text colour */
+.tech-list { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; padding: 0; list-style: none; font-size: 13.5px; line-height: 1.4; color: var(--muted); }
+.tech-list li { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.tech-icon { flex: none; width: 15px; height: 15px; fill: currentColor; opacity: .85; }
+svg.lucide.tech-icon { fill: none; stroke: currentColor; }
+.feature aside .tech-list { margin-top: 6px; }
 .work-go { font-size: 14px; font-weight: 600; white-space: nowrap; transition: transform .35s var(--ease-out); }
 .work-rows a:hover .work-go { transform: translateX(4px); }
 /* hover preview: a small glass card floating above the hovered row (WorkRows moves it) */
@@ -183,6 +211,9 @@ main { position: relative; z-index: 1; display: grid; gap: clamp(48px, 11vh, 140
 .jobs ul { max-width: 64ch; margin: 12px 0 0; padding-left: 18px; font-size: 16px; line-height: 1.6; color: var(--muted); }
 .jobs ul li { margin-bottom: 4px; }
 .jobs ul li::marker { color: var(--accent-2); }
+.jobs ul.tech-list { max-width: none; margin: 14px 0 0; padding: 0; font-size: 13.5px; line-height: 1.4; }
+.jobs ul.tech-list li { margin: 0; }
+.job-tag { display: inline-block; margin-left: 10px; padding: 2px 9px; border: 1px solid var(--line); border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--muted); vertical-align: 1px; }
 
 /* Recognition */
 .awards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
@@ -291,8 +322,10 @@ html:is(.intro-pending, .intro-on):not(.intro-title) .hero-content { opacity: .0
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
   html { scroll-padding-top: 84px; }
-  .site-header { padding: 6px 6px 6px 18px; }
-  .desktop-nav, .site-header > .button { display: none; }
+  /* phones: just a round menu button at the top right */
+  .site-header { margin-right: 16px; padding: 4px; }
+  .desktop-nav { display: none; }
+  .mobile-nav { min-width: min(280px, calc(100vw - 32px)); left: auto !important; }
   .mobile-menu-button { display: block; }
   .mobile-nav { position: absolute; top: calc(100% + 8px); left: 0; right: 0; display: flex; flex-direction: column; padding: 8px 20px; border-radius: 22px; background: rgb(246 244 238 / .96); color: #10201f; box-shadow: 0 20px 50px rgb(10 14 26 / .2); visibility: hidden; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity .25s, transform .25s, visibility .25s; }
   .mobile-nav-open { visibility: visible; opacity: 1; transform: translateY(0); pointer-events: auto; }
@@ -300,7 +333,7 @@ html:is(.intro-pending, .intro-on):not(.intro-title) .hero-content { opacity: .0
   .mobile-nav a:last-child { border-bottom: 0; }
   .hero { grid-template-columns: 1fr; min-height: 0; }
   .feature, .about-facts, .awards { grid-template-columns: 1fr; }
-  .work-rows a { grid-template-columns: 1fr; gap: 6px; }
+  .work-rows a, .work-row { grid-template-columns: 1fr; gap: 6px; }
   .jobs > li { grid-template-columns: 1fr; gap: 8px; }
   .work-preview { display: none; }
   .switcher-title { display: none; }

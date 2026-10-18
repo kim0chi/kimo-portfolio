@@ -11,6 +11,8 @@ import { GlassPanel } from "@/components/glass/glass-panel"
 import { GlassScene } from "@/components/glass/glass-scene"
 import { useLiquidGlass } from "@/components/glass/use-liquid-glass"
 import { WorkRows } from "@/components/work/work-rows"
+import { GlassCursor } from "@/components/glass/glass-cursor"
+import { TechList } from "@/components/tech/tech-list"
 
 const navigation = [
   { href: "#work", label: "Work" },
@@ -25,6 +27,8 @@ const firstNames = displayName.split(" ").slice(0, -1).join(" ")
 const lastName = displayName.split(" ").at(-1)
 const sentence = (text: string) => text.charAt(0).toUpperCase() + text.slice(1)
 const titleCase = (label: string) => label.toLowerCase().replace(/(^|\s)\S/g, (letter) => letter.toUpperCase()).replace(/\bAi\b/, "AI")
+// labels in the experience data that are ways of working, not technologies
+const NOT_TECH = new Set(["Production", "Support", "Communication"])
 // staggers the hero's supporting lines in the intro (see .hero-after in globals.css)
 const step = (index: number) => ({ "--i": index }) as CSSProperties
 
@@ -42,14 +46,14 @@ export default function Portfolio() {
     <>
       <PondBackground />
       <GlassScene />
+      <GlassCursor />
       <a href="#work" className="skip-link">Skip to selected work</a>
 
+      {/* just the sections: the name lives in the hero, the CV link in the hero and contact */}
       <GlassPanel as="header" kind="nav" ref={headerRef} className="site-header">
-        <a className="site-name" href="#top">{displayName}</a>
         <nav className="desktop-nav" aria-label="Main navigation">
           {navigation.map((item) => <a href={item.href} key={item.href}>{item.label}</a>)}
         </nav>
-        <a className="button" href={profile.resume} download>CV</a>
         <button
           type="button"
           className="mobile-menu-button"
@@ -85,6 +89,7 @@ export default function Portfolio() {
               <p className="hero-facts hero-after" style={step(2)}>{profile.location} · {profile.status}</p>
               <div className="hero-actions hero-after" style={step(3)}>
                 <a className="button" href="#work">See my work</a>
+                <a className="button button-ghost" href={profile.resume} download>Download CV</a>
                 <a className="button button-ghost" href={"mailto:" + profile.email}>Email me</a>
               </div>
             </div>
@@ -101,7 +106,7 @@ export default function Portfolio() {
             </div>
             <aside>
               {featured.award && <div><b>Recognition</b>{featured.award}</div>}
-              <div><b>Stack</b><span className="mono">{featured.tech.join(", ")}</span></div>
+              <div><b>Stack</b><TechList items={featured.tech} /></div>
               {featuredLink && (
                 <div>
                   <a className="button button-ghost" href={featuredLink} target="_blank" rel="noopener noreferrer">
@@ -122,8 +127,14 @@ export default function Portfolio() {
                 <span className="job-when mono">{job.period}</span>
                 <div>
                   <h3 className="display">{job.role}</h3>
-                  <p className="job-org">{job.org} · {job.location}</p>
-                  <ul>{job.bullets.slice(0, 2).map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
+                  <p className="job-org">
+                    {job.org}
+                    {job.location && <span> · {job.location}</span>}
+                    {job.volunteer && <span className="job-tag">Volunteer</span>}
+                  </p>
+                  {/* current roles get their full story; earlier ones the two lines that matter most */}
+                  <ul>{job.bullets.slice(0, job.current ? 4 : 2).map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
+                  <TechList items={job.tech.filter((name) => !NOT_TECH.has(name))} className="job-tech" />
                 </div>
               </li>
             ))}
@@ -172,12 +183,16 @@ export default function Portfolio() {
               {skillGroups.map((group) => (
                 <div key={group.label}>
                   <dt>{titleCase(group.label)}</dt>
-                  <dd>{group.skills.map((skill) => skill.name).join(", ")}</dd>
+                  <dd><TechList items={group.skills.map((skill) => skill.name)} /></dd>
                 </div>
               ))}
               <div>
                 <dt>Data and deployment</dt>
-                <dd>{[...skillTags.Databases, ...skillTags.Deployment].join(", ")}</dd>
+                <dd><TechList items={[...skillTags.Databases, ...skillTags.Deployment]} /></dd>
+              </div>
+              <div>
+                <dt>Tools</dt>
+                <dd><TechList items={skillTags.Tools} /></dd>
               </div>
             </dl>
           </div>

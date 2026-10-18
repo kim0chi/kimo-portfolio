@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type PointerEvent } from "react"
 import { createPortal } from "react-dom"
 import type { Project } from "@/lib/content"
 import { GlassPanel } from "@/components/glass/glass-panel"
+import { TechList } from "@/components/tech/tech-list"
 
 // The preview floats this far above the hovered row, so it never covers the row you're reading.
 const PREVIEW_LIFT = 120
@@ -67,23 +68,24 @@ export function WorkRows({ projects }: { projects: Project[] }) {
       <ul className="work-rows">
         {projects.map((project) => {
           const destination = project.liveUrl || project.githubUrl
+          const body = <RowBody project={project} linked={Boolean(destination)} />
           return (
             <li key={project.id}>
-              <a
-                href={destination}
-                target="_blank"
-                rel="noopener noreferrer"
-                onPointerEnter={(event) => enter(event, project)}
-                onPointerMove={aim}
-                onPointerLeave={() => setActive(null)}
-              >
-                <h3>{project.title}</h3>
-                <p>
-                  {project.tagline}
-                  <span className="work-stack mono">{project.tech.slice(0, 4).join(", ")}</span>
-                </p>
-                <span className="work-go">{project.liveUrl ? "Visit" : "Code"} →</span>
-              </a>
+              {destination ? (
+                <a
+                  href={destination}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onPointerEnter={(event) => enter(event, project)}
+                  onPointerMove={aim}
+                  onPointerLeave={() => setActive(null)}
+                >
+                  {body}
+                </a>
+              ) : (
+                // a project without a public link is a plain row: nothing to visit
+                <div className="work-row">{body}</div>
+              )}
             </li>
           )
         })}
@@ -101,6 +103,20 @@ export function WorkRows({ projects }: { projects: Project[] }) {
         </GlassPanel>,
         document.body,
       )}
+    </>
+  )
+}
+
+function RowBody({ project, linked }: { project: Project; linked: boolean }) {
+  const action = linked ? (project.liveUrl ? "Visit →" : "Code →") : project.status === "self-hosted" ? "Private" : ""
+  return (
+    <>
+      <h3>{project.title}</h3>
+      <div>
+        <p>{project.tagline}</p>
+        <TechList items={project.tech.slice(0, 5)} className="work-stack" />
+      </div>
+      <span className="work-go">{action}</span>
     </>
   )
 }

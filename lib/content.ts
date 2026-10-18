@@ -8,13 +8,13 @@ export const profile = {
   age: 22,
   tagline: "turning curiosity into code",
   location: "Lapu-Lapu City, Cebu, Philippines",
-  status: "Available for work",
+  status: "Open to new opportunities",
   email: "illustrisimo.jikimo@gmail.com",
   phone: "09765297831",
   links: {
     github: "https://github.com/kim0chi",
     linkedin: "https://www.linkedin.com/in/gio-illustrisimo-aa9a42133/",
-    site: "https://kimo-portfolio.netlify.app/",
+    site: "https://k1m0.dev",
   },
   resume: "/Benedict Gio Illustrisimo CV.pdf",
 }
@@ -22,15 +22,46 @@ export const profile = {
 export type Experience = {
   role: string
   org: string
+  /** left empty when there's nothing useful to say */
   location: string
   period: string
   current?: boolean
+  /** an unpaid role, such as a nonprofit board seat */
+  volunteer?: boolean
   bullets: string[]
   tech: string[]
 }
 
-// Internships lead (most relevant), employment after.
+// Current roles first, then internships, then earlier work.
+// The Evotech entry describes client work at a public level only: no seller data, internal systems or figures.
 export const experience: Experience[] = [
+  {
+    role: "Junior Full-Stack Developer",
+    org: "Evotech Software Solutions Inc.",
+    location: "Cebu IT Park, Cebu City",
+    period: "JUL 2026 — PRESENT",
+    current: true,
+    bullets: [
+      "Develop Seller Investigators, Carbon6's platform that recovers reimbursements Amazon owes FBA sellers, in a Laravel, Vue 3 and MySQL codebase.",
+      "Built and extended an internal email-campaign tool for the customer success team: audience targeting, scheduled and batched sending, delivery health checks that recover stalled sends, and outcome reports.",
+      "Made the Python and Selenium automation behind the product more dependable.",
+      "Fixed data-integrity and access-control issues in background jobs and admin workflows, backed by PHPUnit tests and static analysis in CI.",
+    ],
+    tech: ["PHP", "Laravel", "Vue 3", "MySQL", "Redis", "Python", "Selenium", "pytest", "GitHub Actions", "Docker"],
+  },
+  {
+    role: "Director, Administration & Technology (Board of Directors)",
+    org: "SDAHA International",
+    location: "Remote",
+    period: "AUG 2026 — PRESENT",
+    current: true,
+    volunteer: true,
+    bullets: [
+      "Lead technology for a Texas 501(c)(3) that helps families in Texas and the Philippines: built and launched sdahacares.org with its online giving campaigns and intake forms.",
+      "Built a staff portal for request triage, volunteers and campaign updates (in staging), and drafted the organisation's privacy and access policies with the founder.",
+    ],
+    tech: ["Next.js", "TypeScript", "Cloudflare Workers", "Cloudflare"],
+  },
   {
     role: "Production Web & Mobile App Developer Intern",
     org: "Symph Inc.",
@@ -106,6 +137,7 @@ export const skillGroups: SkillGroup[] = [
       { name: "Python", level: 85 },
       { name: "TypeScript", level: 80 },
       { name: "JavaScript", level: 80 },
+      { name: "PHP", level: 70 },
       { name: "C#", level: 70 },
       { name: "Java", level: 60 },
       { name: "C", level: 55 },
@@ -115,6 +147,8 @@ export const skillGroups: SkillGroup[] = [
     label: "FRAMEWORKS",
     skills: [
       { name: "React / Next.js", level: 85 },
+      { name: "Laravel", level: 70 },
+      { name: "Vue 3", level: 70 },
       { name: "FastAPI", level: 80 },
       { name: "Tailwind CSS", level: 85 },
       { name: ".NET / ASP.NET", level: 65 },
@@ -124,6 +158,7 @@ export const skillGroups: SkillGroup[] = [
     label: "AI & AUTOMATION",
     skills: [
       { name: "LLMs / Agentic AI", level: 80 },
+      { name: "Selenium", level: 75 },
       { name: "NLP", level: 75 },
       { name: "ASR (Whisper, T5, mT5)", level: 70 },
       { name: "RAG / Embeddings", level: 75 },
@@ -133,9 +168,9 @@ export const skillGroups: SkillGroup[] = [
 
 // Flat skill tags shown as a marquee of capabilities.
 export const skillTags = {
-  Databases: ["PostgreSQL", "Supabase", "Neon.Tech", "MySQL", "SQLite"],
-  Deployment: ["Vercel", "Azure", "GCP", "AWS", "DigitalOcean"],
-  Tools: ["ServiceNow", "GitHub", "Linux", "Jupyter", "Machine Learning"],
+  Databases: ["PostgreSQL", "MySQL", "Redis", "SQLite", "Supabase", "Neon.Tech"],
+  Deployment: ["Vercel", "Cloudflare", "Docker", "Azure", "GCP", "AWS", "DigitalOcean"],
+  Tools: ["GitHub Actions", "pytest", "Postman", "ServiceNow", "Linux", "Jupyter"],
 }
 
 export type Project = {
@@ -165,6 +200,25 @@ export const projects: Project[] = [
     featured: true,
     status: "production",
     githubUrl: "https://github.com/kim0chi",
+  },
+  {
+    id: "sdaha",
+    title: "SDAHA International",
+    tagline: "Nonprofit website, giving campaigns and staff portal",
+    description:
+      "The website and operations platform for a Texas 501(c)(3) that helps families in Texas and the Philippines. The public site runs donation campaigns and private intake forms for assistance, volunteers and nominations, and has been live since September 2026. A staff portal behind Cloudflare Access handles request triage, a volunteer pipeline and campaign updates through a Workers and D1 API (in staging).",
+    tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Cloudflare Workers", "Vitest"],
+    liveUrl: "https://sdahacares.org",
+    status: "live",
+  },
+  {
+    id: "kimo",
+    title: "Kimo",
+    tagline: "Self-hosted learning and work dashboard",
+    description:
+      "A private workspace that reads my Markdown notebooks in place and turns them into a study system: spaced-repetition flashcards, write-from-memory exercises, and in-browser code labs that run JavaScript, TypeScript, Python, PHP and SQL through WebAssembly. It also tracks tasks and ideas and queues learning jobs for AI coding agents, which commit reviewable guides on their own branches.",
+    tech: ["Nuxt 4", "Vue 3", "TypeScript", "SQLite", "Tailwind CSS", "WebAssembly", "Docker"],
+    status: "self-hosted",
   },
   {
     id: "dex",
@@ -207,8 +261,7 @@ export const projects: Project[] = [
       "A student enrollment system with a multi-approval workflow and role-based access control, built on ASP.NET Core MVC with a PostgreSQL database and deployed to Azure.",
     tech: ["ASP.NET Core", "C#", "Razor Pages", "PostgreSQL", "Azure"],
     image: "/CampusFlow.webp",
-    liveUrl: "https://campusflow-b3hfdmbhbwhecgda.southeastasia-01.azurewebsites.net",
-    githubUrl: "https://github.com/kim0chi/CampusFlow",
+    // no link for now: the Azure demo is down and the repo is private
   },
   {
     id: "bisaya-sentiment",

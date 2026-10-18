@@ -3,6 +3,7 @@ import type { ReactNode } from "react"
 import { Mona_Sans } from "next/font/google"
 import localFont from "next/font/local"
 import { DEFAULT_PAINTING, paintingStill, paintings, type Colourway } from "@/lib/paintings"
+import { profile } from "@/lib/content"
 import ClientLayout from "./ClientLayout"
 import "./globals.css"
 
@@ -23,11 +24,15 @@ const monaSansMono = localFont({
 })
 
 export const metadata: Metadata = {
+  // the canonical address (lib/content.ts); other hosts serving the same build point here
+  metadataBase: new URL(profile.links.site),
+  alternates: { canonical: "/" },
   title: "Benedict Gio Illustrisimo — Full-Stack Developer & AI Engineer",
   description: "Benedict Gio Illustrisimo, full-stack developer and AI engineer in Lapu-Lapu City, Cebu, Philippines. Selected work, experience and contact.",
   openGraph: {
     title: "Benedict Gio Illustrisimo — Full-Stack Developer & AI Engineer",
     description: "Full-stack developer and AI engineer in Cebu, Philippines.",
+    url: "/",
     type: "website",
   },
 }
